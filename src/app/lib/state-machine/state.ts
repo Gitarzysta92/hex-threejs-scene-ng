@@ -1,10 +1,10 @@
-export interface MachineState {
+export interface State {
   id: number;
-  to: (nextStep: any) => boolean;
+  to: (stepId: number) => boolean;
 }
 
-export interface StateTransition<T extends MachineState> {
+export interface StateTransition<T extends State> {
   transition: (prevState: T) => boolean
 }
 
-
+export type TransitionsScheme<T extends State> = { [key: number]: { [key: number]: (state: T) => boolean } }

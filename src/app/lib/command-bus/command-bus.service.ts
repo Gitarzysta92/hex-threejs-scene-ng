@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseCommand } from './base-command';
 
-export interface CommandBusFilter {
-  verify: (command: any) => boolean;
+export interface CommandBusFilter<T> {
+  verify: (command: T) => boolean;
 }
 
-export interface CommandBusHandler {
-  handle: (command: any) => void;
-  handleAsync?: (command: any) => Observable<void>;
+export interface CommandBusHandler<T extends BaseCommand> {
+  handle: (command: T) => void;
+  handleAsync?: (command: T) => Observable<void>;
 }
 
 
@@ -17,37 +17,35 @@ export interface CommandBusHandler {
 })
 export class CommandBusService {
   
-  private _filters: CommandBusFilter[] = [];
-  private _handler: CommandBusHandler = new DefaultHandler;
-
+  private _filters: CommandBusFilter<any>[] = [];
+  private _handlers: CommandBusHandler<any>[] = [];
   constructor() { }
 
   public dispatch(command: BaseCommand): void {
-    const passed = this._filters.filter(f => f.verify(command));
+    const isNotPassedVerification = this._filters.some(f => !f.verify(command));
 
-    if (this._filters.length > 0 && passed.length === 0)
+    if (this._filters.length > 0 && isNotPassedVerification)
       return;
 
-    this._handler.handle(command);
+    this._handlers.forEach(handler => handler.handle(command));
   }
 
-  public useFilter(filter: CommandBusFilter): void {
+  public useFilter<T>(filter: CommandBusFilter<T>): void {
     this._filters.push(filter);
   }
 
-  public useHandler(handler: CommandBusHandler): void {
-    this._handler = handler;
+  public useHandler<T extends BaseCommand>(handler: CommandBusHandler<T>): void {
+    this._handlers.push(handler);
   }
 }
 
 
 
-class DefaultHandler implements CommandBusHandler {
+@Injectable({
+  providedIn: 'root'
+})
+export class DefaultHandler implements CommandBusHandler<BaseCommand> {
   public handle(command: BaseCommand) {
     command.execute();
   }
 }
-
-
-
-

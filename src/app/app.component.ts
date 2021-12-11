@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Intersection } from 'three';
 import { CommandsFactory } from './commands/commands-factory';
-import { CommandBusService } from './lib/command-bus/command-bus.service';
-import { CommandsStackService } from './lib/commands-stack/commands-stack.service';
-import { StateMachineService } from './lib/state-machine/state-machine.service';
-import { SceneService } from './services/scene/scene.service';
+import { BaseCommand } from './lib/command-bus/base-command';
+import { CommandBusService, DefaultHandler } from './lib/command-bus/command-bus.service';
+import { CommandsStackService, RevertableCommand } from './lib/commands-stack/commands-stack.service';
+import { StateTransition } from './lib/state-machine/state';
+import { StateTransitionValidatorService } from './services/state-transition-validator/state-transition-validator.service';
+import { RoundState } from './state/round-state';
 
 
 @Component({
@@ -18,18 +20,20 @@ export class AppComponent implements OnInit {
 
   constructor(
     private readonly _commandBusService: CommandBusService,
-    private readonly _stateMachine: StateMachineService,
     private readonly _commandsStack: CommandsStackService,
-    private readonly _command: CommandsFactory
+    private readonly _defaultHandler: DefaultHandler,
+    private readonly _command: CommandsFactory,
+    private readonly _stateTransitionService: StateTransitionValidatorService
   ) { }
 
   ngOnInit() {
-    this._commandBusService.useFilter(this._stateMachine);
-    this._commandBusService.useHandler(this._commandsStack);
+    this._commandBusService.useFilter<StateTransition<RoundState>>(this._stateTransitionService);
+    this._commandBusService.useHandler<RevertableCommand>(this._commandsStack);
+    this._commandBusService.useHandler<BaseCommand>(this._defaultHandler);
   }
 
   public attachTokenToField(intersection: Intersection): void {
-    const command = this._command.assignToken();
+    const command = this._command.assignToken(intersection);
     this._commandBusService.dispatch(command);
   }
 }
