@@ -11,12 +11,16 @@ import { ObjectFactory } from "src/app/scene/objects/objects";
 import { AnimationManager } from "src/app/scene/services/animation-manager";
 import { ColliderTask, Collidable } from "src/app/scene/services/collider";
 import { DragManager } from "src/app/scene/services/drag-manager";
-import { Vector3, Quaternion, Vector2 } from "three";
+import { Vector3, Quaternion, Vector2, Intersection } from "three";
+
+export type Coords = { [key: string]: number };
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class SceneService {
+
   mousemove$: any;
   
   constructor(
@@ -173,8 +177,17 @@ export class SceneService {
 
         //   });
       });
-    
+  }
 
+  public getField(_targetFieldId: number) {
+    throw new Error("Method not implemented.");
+  }
+  public getTile(_tileId: string) {
+    throw new Error("Method not implemented.");
+  }
+
+  public getTargetedElements(pointerCords: Coords): Intersection[] {
+    return this.view.intersect(new Vector2(pointerCords.x, pointerCords.y))
   }
 
 
@@ -183,12 +196,16 @@ export class SceneService {
   }
 
 
-  public async attachTokenToField(token: any, hexField: any) {
+  public async attachTileToField(token: any, hexField: any): Promise<void> {
     this.dragManager.stopDragging();
     
     const { coords, quat } = hexField.takeBy(token);
     await this.animationManager.transition(token, coords, quat)
     //return mapCoordsTo2d(token.coords);
+  }
+
+  public async detachTileFromField(token: any, hexField: any): Promise<void> {
+    
   }
 
 

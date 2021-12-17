@@ -31,11 +31,6 @@ export class AppComponent implements OnInit {
     this._commandBusService.useHandler<RevertableCommand>(this._commandsStack);
     this._commandBusService.useHandler<BaseCommand>(this._defaultHandler);
   }
-
-  public attachTokenToField(intersection: Intersection): void {
-    const command = this._command.assignToken(intersection);
-    this._commandBusService.dispatch(command);
-  }
 }
 
 

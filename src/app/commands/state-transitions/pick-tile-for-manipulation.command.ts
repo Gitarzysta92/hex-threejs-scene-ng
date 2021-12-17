@@ -1,9 +1,14 @@
 import { BaseCommand } from "src/app/lib/command-bus/base-command";
 import { Revertable } from "src/app/lib/commands-stack/commands-stack.service";
 import { StateTransition } from "src/app/lib/state-machine/state";
+import { GameLogicService } from "src/app/services/game-logic/game-logic.service";
 import { SceneService } from "src/app/services/scene/scene.service";
+import { RoundState, RoundStateName } from "src/app/state/round-state";
 
 export class PickTileForManipulation extends BaseCommand implements StateTransition<RoundState>, Revertable {
+  private _tileId!: string;
+
+  targetState: RoundStateName = RoundStateName.UtilizingTile
 
   constructor(
     private readonly _sceneService: SceneService,
@@ -11,22 +16,19 @@ export class PickTileForManipulation extends BaseCommand implements StateTransit
   ) {
     super();
   } 
-  
 
-  setParameters(playerId: string): this {
-    this._playerId = playerId;
+  setParameters(tileId: string): this {
+    this._tileId = tileId;
     return this;
   }
 
   execute(): void {
     const round = this._gameLogicService.createRound();
-
   }
 
   revert() { }
 
-  transition(state: RoundState): boolean {
-    return state.to(RoundState.Started);
+  checkIfTransitionPossible(prevState: RoundState): boolean {
+    return true
   }
-
 }

@@ -1,10 +1,13 @@
 import { BaseCommand } from "src/app/lib/command-bus/base-command";
 import { Revertable } from "src/app/lib/commands-stack/commands-stack.service";
 import { StateTransition } from "src/app/lib/state-machine/state";
-import { Round, RoundState } from "src/app/logic/models/round";
+import { GameLogicService } from "src/app/services/game-logic/game-logic.service";
 import { SceneService } from "src/app/services/scene/scene.service";
+import { RoundState, RoundStateName } from "src/app/state/round-state";
 
-export class DiscardTile extends BaseCommand implements StateTransition<Round>, Revertable {
+export class DiscardTiles extends BaseCommand implements StateTransition<RoundState>, Revertable {
+
+  targetState: RoundStateName = RoundStateName.TilesManage
 
   constructor(
     private readonly _sceneService: SceneService,
@@ -12,22 +15,19 @@ export class DiscardTile extends BaseCommand implements StateTransition<Round>, 
   ) {
     super();
   } 
-  
 
-  setParameters(playerId: string): this {
-    this._playerId = playerId;
-    return this;
-  }
+  setParameters(playerId: string): this { return this }
 
   execute(): void {
     const round = this._gameLogicService.createRound();
+  }
+
+  revert(): void { 
 
   }
 
-  revert() { }
-
-  transition(state: Round): boolean {
-    return state.to(RoundState.Started);
+  checkIfTransitionPossible(prevState: RoundState): boolean {
+    return true;
   }
 
 }

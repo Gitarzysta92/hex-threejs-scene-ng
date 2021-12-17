@@ -1,33 +1,26 @@
 import { BaseCommand } from "src/app/lib/command-bus/base-command";
 import { Revertable } from "src/app/lib/commands-stack/commands-stack.service";
 import { StateTransition } from "src/app/lib/state-machine/state";
-import { Round, RoundState } from "src/app/logic/models/round";
 import { SceneService } from "src/app/services/scene/scene.service";
+import { RoundState, RoundStateName } from "src/app/state/round-state";
 
-export class ConfirmTileAction extends BaseCommand implements StateTransition<Round>, Revertable {
+export class ConfirmTileAction extends BaseCommand implements StateTransition<RoundState>, Revertable {
+
+  targetState: RoundStateName = RoundStateName.TilesManage
 
   constructor(
     private readonly _sceneService: SceneService,
-    private readonly _gameLogicService: GameLogicService
   ) {
     super();
   } 
   
+  setParameters(playerId: string): this { return this }
+  execute(): void { }
+  revert(): void { }
 
-  setParameters(playerId: string): this {
-    this._playerId = playerId;
-    return this;
+  checkIfTransitionPossible(prevState: RoundState): boolean {
+    return true;
   }
 
-  execute(): void {
-    const round = this._gameLogicService.createRound();
-
-  }
-
-  revert() { }
-
-  transition(state: Round): boolean {
-    return state.to(RoundState.Started);
-  }
 
 }

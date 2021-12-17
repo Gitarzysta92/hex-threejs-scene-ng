@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class TilesRepositoryService {
 
-  [1]: {
+  ['1']: {
     img: 'assets/img/sniper.jpg'
   }
 

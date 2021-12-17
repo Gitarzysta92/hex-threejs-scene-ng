@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { BaseCommand } from './base-command';
 
 export interface CommandBusFilter<T> {
-  verify: (command: T) => boolean;
+  filter: (command: T) => boolean;
 }
 
 export interface CommandBusHandler<T extends BaseCommand> {
@@ -22,7 +22,7 @@ export class CommandBusService {
   constructor() { }
 
   public dispatch(command: BaseCommand): void {
-    const isNotPassedVerification = this._filters.some(f => !f.verify(command));
+    const isNotPassedVerification = this._filters.some(f => !f.filter(command));
 
     if (this._filters.length > 0 && isNotPassedVerification)
       return;

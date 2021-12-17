@@ -9,6 +9,10 @@ export enum UnitType {
   Module
 }
 
+export enum ActionType {
+  Targetless,
+}
+
 
 export const TYPE = {
   UNIT: {
@@ -17,8 +21,7 @@ export const TYPE = {
     MODULE: TileType.Unit + UnitType.Module
   },
   INSTANT_ACTION: {
-    TARGETLESS:
-    
+    TARGETLESS: TileType.InstantAction + ActionType.Targetless  
   }
 }
 

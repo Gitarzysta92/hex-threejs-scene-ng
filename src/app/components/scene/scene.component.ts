@@ -10,9 +10,6 @@ import { Intersection } from 'three';
   styleUrls: ['./scene.component.css'],
 })
 export class SceneComponent implements OnInit {
-
-  @Output() onClick: EventEmitter<Intersection> = new EventEmitter();
-
   @ViewChild('canvas') _canvas: ElementRef | undefined;
   scene: any;
 

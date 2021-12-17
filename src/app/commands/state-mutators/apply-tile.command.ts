@@ -4,8 +4,9 @@ import { SceneService } from "src/app/services/scene/scene.service";
 import { Intersection } from "three";
 
 export class ApplyTile extends BaseCommand implements Revertable {
+  tileId!: string;
+  private _intersection: any;
 
-  private _intersection!: Intersection;
 
   constructor(
     private readonly _sceneService: SceneService,
@@ -13,8 +14,8 @@ export class ApplyTile extends BaseCommand implements Revertable {
     super();
   }
 
-  setParameters(intersection: Intersection): this {
-    this._intersection = intersection;
+  setParameters(tileId: string): this {
+    this.tileId = tileId;
     return this;
   }
 
@@ -22,7 +23,7 @@ export class ApplyTile extends BaseCommand implements Revertable {
     const field = this._intersection.distance;
     const token = this._sceneService.dragManager.currentObject;
     if (!!field) {
-      this._sceneService.attachTokenToField(token, field);
+      this._sceneService.attachTileToField(token, field);
     } 
   }
 

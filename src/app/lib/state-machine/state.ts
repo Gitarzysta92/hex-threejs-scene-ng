@@ -1,10 +1,11 @@
 export interface State {
   id: number;
-  to: (stepId: number) => boolean;
+  to: (nextState: any) => boolean;
 }
 
 export interface StateTransition<T extends State> {
-  transition: (prevState: T) => boolean
+  checkIfTransitionPossible: (prevState: T) => boolean
+  targetState: number;
 }
 
 export type TransitionsScheme<T extends State> = { [key: number]: { [key: number]: (state: T) => boolean } }

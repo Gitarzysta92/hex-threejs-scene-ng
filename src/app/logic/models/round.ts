@@ -1,13 +1,12 @@
+import { Tile } from "./tile";
 
 
 export class Round {
 
   public id!: number;
-  public pickedTokens!: []
-  public disposingToken!: Token;
   public playerId!: string;
   public prevRound!: Round;
-  public tiles: any;
+  public holdedTiles!: Tile[];
 
 
   constructor(data: Partial<Round>) {

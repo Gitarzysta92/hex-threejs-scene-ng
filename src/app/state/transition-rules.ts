@@ -4,22 +4,22 @@ import { RoundState, RoundStateName as State } from "./round-state";
 
 export const roundStateTransitionRules: TransitionsScheme<RoundState> = {
   [State.Started]: {
-    [State.ChoosingTileToDiscard]: (state: RoundState) => state.tiles.length === 3
+    [State.ChoosingTileToDiscard]: (state: RoundState) => state.holdedTiles.length === 3
   },
   [State.ChoosingTileToDiscard]: {
-    [State.TilesManage]: (state: RoundState) => state.tiles.length < 3
+    [State.TilesManage]: (state: RoundState) => state.holdedTiles.length === 2
   },
   [State.TilesManage]: {
-    [State.UtilizingTile]: (state: RoundState) => !!state.disposingToken,
-    [State.TileManipulation]: (state: RoundState) => !!state.disposingToken,
+    [State.UtilizingTile]: (state: RoundState) => !!state.utilizingTile,
+    [State.TileManipulation]: (state: RoundState) => !!state.utilizingTile,
     [State.Ended]: () => true
   },
   [State.UtilizingTile]: {
-    [State.TilesManage]: (state: RoundState) => !state.disposingToken,
+    [State.TilesManage]: (state: RoundState) => !state.utilizingTile,
     [State.Battle]: (state: RoundState) => true
   },
   [State.TileManipulation]: {
-    [State.TilesManage]: (state: RoundState) => !state.disposingToken
+    [State.TilesManage]: (state: RoundState) => !state.utilizingTile
   },
   [State.Battle]: { },
   [State.Ended]: {

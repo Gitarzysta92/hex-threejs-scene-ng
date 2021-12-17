@@ -28,17 +28,17 @@ export class ControlsComponent implements OnInit {
   }
 
   utilizeTile(): void {
-    const command = this._command.utilizeTile(1);
+    const command = this._command.utilizeTile('1');
     this._commandBus.dispatch(command);
   }
 
   pickTileForManipulation(): void {
-    const command = this._command.pickTileForManipulation(1);
+    const command = this._command.pickTileForManipulation('1');
     this._commandBus.dispatch(command);
   }
 
   confirmTileAction(): void {
-    const command = this._command.pickTileForManipulation(1);
+    const command = this._command.pickTileForManipulation('1');
     this._commandBus.dispatch(command);
   }
 

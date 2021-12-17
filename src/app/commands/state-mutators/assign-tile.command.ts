@@ -1,12 +1,11 @@
 import { BaseCommand } from "src/app/lib/command-bus/base-command";
 import { Revertable } from "src/app/lib/commands-stack/commands-stack.service";
-import { Round, RoundState } from "src/app/logic/models/round";
 import { SceneService } from "src/app/services/scene/scene.service";
-import { Intersection } from "three";
 
 export class AssignTile extends BaseCommand implements Revertable {
 
-  private _intersection!: Intersection;
+  private _tileId!: string;
+  private _targetFieldId!: number;
 
   constructor(
     private readonly _sceneService: SceneService,
@@ -14,19 +13,23 @@ export class AssignTile extends BaseCommand implements Revertable {
     super();
   }
 
-  setParameters(intersection: Intersection): this {
-    this._intersection = intersection;
+  setParameters(tileId: string, targetFieldId: number): this {
+    this._tileId = tileId;
+    this._targetFieldId = targetFieldId;
+
     return this;
   }
 
   execute(): void {
-    const field = this._intersection.distance;
-    const token = this._sceneService.dragManager.currentObject;
-    if (!!field) {
-      this._sceneService.attachTokenToField(token, field);
-    } 
+    const token = this._sceneService.getTile(this._tileId)
+    const field = this._sceneService.getField(this._targetFieldId)
+    this._sceneService.attachTileToField(token, field);
   }
 
-  revert(): void {};
+  revert(): void {
+    const token = this._sceneService.getTile(this._tileId)
+    const field = this._sceneService.getField(this._targetFieldId)
+    this._sceneService.detachTileFromField(token, field);
+  };
   
 }

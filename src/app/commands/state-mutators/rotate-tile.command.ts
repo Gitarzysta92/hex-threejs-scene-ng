@@ -1,5 +1,7 @@
 import { BaseCommand } from "src/app/lib/command-bus/base-command";
 import { Revertable } from "src/app/lib/commands-stack/commands-stack.service";
+import { GameLogicService } from "src/app/services/game-logic/game-logic.service";
+import { SceneService } from "src/app/services/scene/scene.service";
 
 
 export enum RotationDirection {
@@ -17,7 +19,7 @@ export class RotateTile extends BaseCommand implements Revertable {
     super();
   } 
 
-  setParameters(playerId: string): this {
+  setParameters(playerId: string, direction: RotationDirection): this {
     this._playerId = playerId;
     return this;
   }
@@ -27,7 +29,7 @@ export class RotateTile extends BaseCommand implements Revertable {
 
   }
 
-  transition(state: Round): boolean {
-    return state.to(RoundState.Started);
-  }
+  revert(): void {
+    
+  };
 }
