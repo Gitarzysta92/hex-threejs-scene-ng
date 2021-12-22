@@ -3,7 +3,8 @@ import { StateTransition } from "src/app/lib/state-machine/state";
 import { GameLogicService } from "src/app/services/game-logic/game-logic.service";
 import { SceneService } from "src/app/services/scene/scene.service";
 import { TilesRepositoryService } from "src/app/services/tiles-repository/tiles-repository.service";
-import { RoundState, RoundStateName } from "src/app/state/round-state";
+import { RoundState } from "src/app/state/round-state";
+import { RoundStateName } from "src/app/state/state-name.enum";
 
 export class UtilizeTile extends BaseCommand implements StateTransition<RoundState> {
   private _playerId!: string;

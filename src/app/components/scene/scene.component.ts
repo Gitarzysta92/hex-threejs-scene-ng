@@ -1,8 +1,7 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommandsFactory } from 'src/app/commands/commands-factory';
 import { CommandBusService } from 'src/app/lib/command-bus/command-bus.service';
 import { SceneService } from 'src/app/services/scene/scene.service';
-import { Intersection } from 'three';
 
 @Component({
   selector: 'scene',
@@ -19,12 +18,10 @@ export class SceneComponent implements OnInit {
     private readonly _sceneService: SceneService
   ) { }
 
-  ngOnInit(): void {
-    this._sceneService.createScene(this._canvas?.nativeElement)    
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit() {
-    //this._sceneService.createScene(this._canvas?.nativeElement);
+    this._sceneService.createScene(this._canvas?.nativeElement);
   } 
 
   public intersect(event: MouseEvent) {

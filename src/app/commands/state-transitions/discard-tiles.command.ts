@@ -3,7 +3,8 @@ import { Revertable } from "src/app/lib/commands-stack/commands-stack.service";
 import { StateTransition } from "src/app/lib/state-machine/state";
 import { GameLogicService } from "src/app/services/game-logic/game-logic.service";
 import { SceneService } from "src/app/services/scene/scene.service";
-import { RoundState, RoundStateName } from "src/app/state/round-state";
+import { RoundState } from "src/app/state/round-state";
+import { RoundStateName } from "src/app/state/state-name.enum";
 
 export class DiscardTiles extends BaseCommand implements StateTransition<RoundState>, Revertable {
 

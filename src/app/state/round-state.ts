@@ -3,21 +3,12 @@ import { Round } from "../logic/models/round";
 import { Tile } from "../logic/models/tile";
 import { roundStateTransitionRules } from "./transition-rules";
 
-export enum RoundStateName {
-  Started,
-  ChoosingTileToDiscard,
-  TilesManage,
-  UtilizingTile,
-  TileManipulation,
-  Battle,
-  Ended
-}
 
 export class RoundState extends Round implements State {
 
   utilizingTile!: Tile
 
-  constructor(data: Partial<RoundState>) {
+  constructor(data: Partial<RoundState> = {}) {
     super(data);
   }
 

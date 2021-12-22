@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CommandsFactory } from 'src/app/commands/commands-factory';
 import { CommandBusService } from 'src/app/lib/command-bus/command-bus.service';
+import { GameStateService } from 'src/app/services/game-state/game-state.service';
+import { RoundStateName } from 'src/app/state/state-name.enum';
 
 
 @Component({
@@ -10,12 +14,25 @@ import { CommandBusService } from 'src/app/lib/command-bus/command-bus.service';
 })
 export class ControlsComponent implements OnInit {
 
+  public round = RoundStateName
+
+  public internalState: Observable<RoundStateName>;
+
   constructor(
     private readonly _commandBus: CommandBusService,
     private readonly _command: CommandsFactory,
-  ) { }
+    private readonly _gameStateService: GameStateService
+  ) { 
+    this.internalState = this._gameStateService.onStateChange
+      .pipe(map(rs => rs.id))
 
-  ngOnInit(): void { }
+
+    this.internalState.subscribe(console.log)
+  }
+
+  ngOnInit(): void { 
+    
+  }
 
   startRound(): void {
     const command = this._command.startRound('first');
@@ -24,6 +41,11 @@ export class ControlsComponent implements OnInit {
 
   drawTiles(): void {
     const command = this._command.drawTiles();
+    this._commandBus.dispatch(command);  
+  }
+
+  discardTiles(): void {
+    const command = this._command.discardTiles('1');
     this._commandBus.dispatch(command);  
   }
 

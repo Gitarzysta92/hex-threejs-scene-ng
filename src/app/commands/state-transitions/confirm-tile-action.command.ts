@@ -2,7 +2,8 @@ import { BaseCommand } from "src/app/lib/command-bus/base-command";
 import { Revertable } from "src/app/lib/commands-stack/commands-stack.service";
 import { StateTransition } from "src/app/lib/state-machine/state";
 import { SceneService } from "src/app/services/scene/scene.service";
-import { RoundState, RoundStateName } from "src/app/state/round-state";
+import { RoundState } from "src/app/state/round-state";
+import { RoundStateName } from "src/app/state/state-name.enum";
 
 export class ConfirmTileAction extends BaseCommand implements StateTransition<RoundState>, Revertable {
 

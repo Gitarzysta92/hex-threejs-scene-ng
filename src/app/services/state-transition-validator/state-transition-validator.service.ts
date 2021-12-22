@@ -14,7 +14,9 @@ export class StateTransitionValidatorService implements CommandBusFilter<StateTr
     private readonly _gameStateService: GameStateService
   ) { }
 
-  filter(command: StateTransition<RoundState>): boolean {   
+  filter(command: StateTransition<RoundState>): boolean {
+    if (!command.checkIfTransitionPossible)
+      return true;
     const currentState = this._gameStateService.getCurrentRoundState();
     return command.checkIfTransitionPossible(currentState);
   }

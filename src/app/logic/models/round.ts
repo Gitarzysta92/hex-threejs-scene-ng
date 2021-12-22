@@ -10,5 +10,6 @@ export class Round {
 
 
   constructor(data: Partial<Round>) {
+    Object.assign(this, data);
   }
 };

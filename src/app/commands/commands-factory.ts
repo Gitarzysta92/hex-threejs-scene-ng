@@ -48,7 +48,7 @@ export class CommandsFactory {
   public drawTiles(): DrawTiles {
     return new DrawTiles(
       this._sceneService,
-      this._gameLogicService,
+      this._gameStateService,
       this._tilesRepositoryService
     )
   }

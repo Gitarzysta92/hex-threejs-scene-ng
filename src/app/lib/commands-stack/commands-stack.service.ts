@@ -18,10 +18,11 @@ export class CommandsStackService implements CommandBusHandler<RevertableCommand
   constructor() { }
 
   public handle(command: RevertableCommand): void {
-    if (!this._checkIsRevertable(command))
+    if (!this._checkIsRevertable(command) || command.isConsumed)
       return;
     this._stack.push(command);
     command.execute();
+    command.isConsumed = true; 
   }
 
   public revert(): void {

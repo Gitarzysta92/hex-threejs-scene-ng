@@ -3,7 +3,8 @@ import { CommandBusService } from "src/app/lib/command-bus/command-bus.service";
 import { TileType } from "src/app/logic/consts/hierarchical-tile-types-model";
 import { GameStateService } from "src/app/services/game-state/game-state.service";
 import { Coords, SceneService } from "src/app/services/scene/scene.service";
-import { RoundStateName } from "src/app/state/round-state";
+import { RoundStateName } from "src/app/state/state-name.enum";
+
 import { CommandsFactory } from "../commands-factory";
 
 
@@ -30,7 +31,11 @@ export class MakeTileAction extends BaseCommand {
     return;
 
     const currentState = this._gameState.getCurrentRoundState();
-    const utilizingTile = currentState.utilizingTile
+    const utilizingTile = currentState?.utilizingTile
+
+    if (!utilizingTile) {
+      return;
+    }
 
     if (utilizingTile.type === TileType.Unit) {
       switch (currentState.id) {

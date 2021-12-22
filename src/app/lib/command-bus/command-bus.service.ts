@@ -11,14 +11,20 @@ export interface CommandBusHandler<T extends BaseCommand> {
   handleAsync?: (command: T) => Observable<void>;
 }
 
+export interface CommandBusMapper<T> {
+  map: (command: T) => T;
+}
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommandBusService {
-  
+
   private _filters: CommandBusFilter<any>[] = [];
   private _handlers: CommandBusHandler<any>[] = [];
+  private _mappers: CommandBusMapper<any>[] = [];
+
   constructor() { }
 
   public dispatch(command: BaseCommand): void {
@@ -27,6 +33,7 @@ export class CommandBusService {
     if (this._filters.length > 0 && isNotPassedVerification)
       return;
 
+    this._mappers.forEach(mapper => mapper.map(command));
     this._handlers.forEach(handler => handler.handle(command));
   }
 
@@ -37,6 +44,11 @@ export class CommandBusService {
   public useHandler<T extends BaseCommand>(handler: CommandBusHandler<T>): void {
     this._handlers.push(handler);
   }
+
+  public useMapper<T extends BaseCommand>(mapper: CommandBusMapper<T>) {
+    this._mappers.push(mapper);
+  }
+  
 }
 
 
@@ -46,6 +58,7 @@ export class CommandBusService {
 })
 export class DefaultHandler implements CommandBusHandler<BaseCommand> {
   public handle(command: BaseCommand) {
-    command.execute();
+    !command.isConsumed && command.execute();
+    command.isConsumed = true;
   }
 }

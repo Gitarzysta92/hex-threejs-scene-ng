@@ -1,4 +1,33 @@
-<button (click)="startRound()">Start round</button>
-<button (click)="finishRound()">End round</button>
+<ng-container *ngIf="round.Ended === (internalState | async)">
+  <button (click)="startRound()">Start round</button>
+</ng-container>
 
-<button (click)="drawTiles()">Add token</button>
+<ng-container *ngIf="round.Started === (internalState | async)">
+  <button (click)="drawTiles()">Draw tiles</button>
+</ng-container>
+
+<ng-container *ngIf="round.ChoosingTileToDiscard === (internalState | async)">
+  <button (click)="discardTiles()">Discard tiles</button>
+</ng-container>
+
+<ng-container *ngIf="round.TilesManage === (internalState | async)">
+  <button (click)="utilizeTile()">UtilizeTile tiles</button>
+  <button (click)="finishRound()">End round</button>
+</ng-container>
+
+
+
+
+
+
+<ng-container *ngIf="round.TilesManage === (internalState | async)">
+  <button (click)="finishRound()">End round</button>
+</ng-container>
+
+
+
+
+
+
+
+
