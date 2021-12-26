@@ -21,9 +21,7 @@ export class AssignTile extends BaseCommand implements Revertable {
   }
 
   execute(): void {
-    const token = this._sceneService.getTile(this._tileId)
-    const field = this._sceneService.getField(this._targetFieldId)
-    this._sceneService.attachTileToField(token, field);
+    this._sceneService.attachDraggedTileToField(this._targetFieldId);
   }
 
   revert(): void {

@@ -63,7 +63,7 @@ export class CommandsFactory {
   public utilizeTile(tileId: string) {
     return new UtilizeTile(
       this._sceneService,
-      this._gameLogicService,
+      this._gameStateService,
       this._tilesRepositoryService
     ).setParameters(tileId);
   }

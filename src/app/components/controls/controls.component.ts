@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CommandsFactory } from 'src/app/commands/commands-factory';
@@ -12,7 +12,7 @@ import { RoundStateName } from 'src/app/state/state-name.enum';
   templateUrl: './controls.component.html',
   styleUrls: ['./controls.component.css']
 })
-export class ControlsComponent implements OnInit {
+export class ControlsComponent implements OnInit, OnDestroy {
 
   public round = RoundStateName
 
@@ -31,6 +31,10 @@ export class ControlsComponent implements OnInit {
     
   }
 
+  ngOnDestroy(): void {
+
+  }
+
   startRound(): void {
     const command = this._command.startRound('first');
     this._commandBus.dispatch(command);  
@@ -42,12 +46,19 @@ export class ControlsComponent implements OnInit {
   }
 
   discardTiles(): void {
-    const command = this._command.discardTiles(['1']);
+    const state = this._gameStateService.getCurrentRoundState();
+    const tileToDiscard = state.holdedTiles[0]
+    const command = this._command.discardTiles([tileToDiscard.id]);
     this._commandBus.dispatch(command);  
   }
 
   utilizeTile(): void {
-    const command = this._command.utilizeTile('1');
+    const state = this._gameStateService.getCurrentRoundState();
+    const tileToDiscard = state.holdedTiles[0];
+    if (!tileToDiscard)
+      return;
+
+    const command = this._command.utilizeTile(tileToDiscard.id);
     this._commandBus.dispatch(command);
   }
 

@@ -17,7 +17,7 @@ export class LoggerService implements CommandBusMapper<BaseCommand | StateTransi
 
       command.execute = () => {
         commandMethod1.call(command);
-        console.log(command);
+        console.log('handler', command);
       }
     }
     
@@ -27,8 +27,10 @@ export class LoggerService implements CommandBusMapper<BaseCommand | StateTransi
       const commandMethod2 = command.checkIfTransitionPossible;
 
       command.checkIfTransitionPossible = (...args) => {
-        console.log(command);
-        return commandMethod2.call(command, args);    
+        const result = commandMethod2.call(command, ...args);  
+
+        console.log('filter:', result ? 'passed' : 'rejected', command);
+        return result;
       }
     }
 

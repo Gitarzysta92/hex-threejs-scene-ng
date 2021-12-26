@@ -21,10 +21,11 @@ export class ApplyTile extends BaseCommand implements Revertable {
 
   execute(): void {
     const field = this._intersection.distance;
+    if (!field)
+      return;
+      
     const token = this._sceneService.dragManager.currentObject;
-    if (!!field) {
-      this._sceneService.attachTileToField(token, field);
-    } 
+    //this._sceneService.attachTileToField(token, field);
   }
 
   revert(): void {};

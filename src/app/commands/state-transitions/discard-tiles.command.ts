@@ -41,7 +41,8 @@ export class DiscardTiles extends BaseCommand implements StateTransition<RoundSt
   private _createNewState(currentState: RoundState): RoundState {
     return new RoundState({
       id: this.targetState,
-      holdedTiles: (currentState?.prevRound?.holdedTiles || []).filter(t => !this._tilesToDrop.includes(t.id)),
+      holdedTiles: (currentState?.holdedTiles || [])
+        .filter(t => !this._tilesToDrop.some(id => t.id === id)),
       playerId: currentState.playerId,
       prevRound: currentState              
     }); 

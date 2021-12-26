@@ -25,28 +25,48 @@ export class CommandBusService {
   private _handlers: CommandBusHandler<any>[] = [];
   private _mappers: CommandBusMapper<any>[] = [];
 
+  private _asd: Function[] = [];
+
   constructor() { }
 
   public dispatch(command: BaseCommand): void {
-    const isNotPassedVerification = this._filters.some(f => !f.filter(command));
+    for (let a of this._asd) {
+      const result = a(command);
+      if (result === false)
+        break;
+    }
 
-    if (this._filters.length > 0 && isNotPassedVerification)
-      return;
 
-    this._mappers.forEach(mapper => mapper.map(command));
-    this._handlers.forEach(handler => handler.handle(command));
+    // const isNotPassedVerification = this._filters.some(f => !f.filter(command));
+
+    // if (this._filters.length > 0 && isNotPassedVerification)
+    //   return;
+
+    // this._mappers.forEach(mapper => mapper.map(command));
+    // this._handlers.forEach(handler => handler.handle(command));
   }
 
   public useFilter<T>(filter: CommandBusFilter<T>): void {
     this._filters.push(filter);
+    this._asd.push((command: T) => {
+      return filter.filter(command)
+    });
   }
 
   public useHandler<T extends BaseCommand>(handler: CommandBusHandler<T>): void {
     this._handlers.push(handler);
+    this._asd.push((command: T) => {
+      handler.handle(command);
+      return;
+    });
   }
 
   public useMapper<T extends BaseCommand>(mapper: CommandBusMapper<T>) {
     this._mappers.push(mapper);
+    this._asd.push((command: T) => {
+      mapper.map(command);
+      return;
+    });
   }
   
 }

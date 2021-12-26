@@ -139,44 +139,28 @@ export class SceneService {
       });
 
     });
-    this.tasksQueue.enqueue(tokenColliderTask);
-    
+    this.tasksQueue.enqueue(tokenColliderTask);    
     this.dragManager.startDragging(token);
-    // this.dragManager.onDraggingStopped(() => {
-    //   tokenColliderTask.finish();
-    // });
 
-    const destroy$2 = new Subject();
-    fromEvent<MouseEvent>(window, 'click')
-      .pipe(takeUntil(destroy$2))
-      .subscribe(async e => {
-        const v = new Vector2();
-        this._mapToNormalized2dCoords(e, v);
-        const field = this.view.intersect(v).filter(x => x.object instanceof CointainerObject)[0]?.object as unknown as CointainerObject;
-        if (field) {
-          const slot = field.takeBy(token);
-          this.dragManager.stopDragging();
-          await this.animationManager.transition(token, slot.coords, slot.quat);
-          takenFieldCallback && takenFieldCallback(token);
+
+    // const destroy$2 = new Subject();
+    // fromEvent<MouseEvent>(window, 'click')
+    //   .pipe(takeUntil(destroy$2))
+    //   .subscribe(async e => {
+    //     const v = new Vector2();
+    //     this._mapToNormalized2dCoords(e, v);
+    //     const field = this.view.intersect(v).filter(x => x.object instanceof CointainerObject)[0]?.object as unknown as CointainerObject;
+    //     if (field) {
+    //       const slot = field.takeBy(token);
+    //       this.dragManager.stopDragging();
+    //       await this.animationManager.transition(token, slot.coords, slot.quat);
+    //       takenFieldCallback && takenFieldCallback(token);
         
-        } else {
-          this.removeToken(token);
-        }
-        destroy$2.next();
-
-        // fromEvent<MouseEvent>(window, 'click')
-        //   .pipe(takeUntil(destroy$2))
-        //   .subscribe(e => {
-        //     const v = new Vector2();
-        //     this._mapToNormalized2dCoords(e, v);
-        //     const token2 = this.view.intersect(v).filter(x => x.object as unknown as TokenObject === token)[0]?.object;
-        //     if (!token2)
-        //       return;
-
-          
-
-        //   });
-      });
+    //     } else {
+    //       this.removeToken(token);
+    //     }
+    //     destroy$2.next();
+    //   });
   }
 
   public getField(_targetFieldId: number) {
@@ -187,7 +171,15 @@ export class SceneService {
   }
 
   public getTargetedElements(pointerCords: Coords): Intersection[] {
-    return this.view.intersect(new Vector2(pointerCords.x, pointerCords.y))
+    const v = new Vector2(pointerCords.x, pointerCords.y);
+    this._mapToNormalized2dCoords2(v);
+    return this.view.intersect(v);
+  }
+
+  public getTargetedField(pointerCords: Coords): any {
+    const v = new Vector2(pointerCords.x, pointerCords.y);
+    this._mapToNormalized2dCoords2(v);
+    return this.view.intersect(v).find(i => i.object instanceof CointainerObject)?.object;
   }
 
 
@@ -196,12 +188,12 @@ export class SceneService {
   }
 
 
-  public async attachTileToField(token: any, hexField: any): Promise<void> {
+  public async attachDraggedTileToField(hexField: any): Promise<void> {
+    const token = this.dragManager.currentObject;
     this.dragManager.stopDragging();
-    
     const { coords, quat } = hexField.takeBy(token);
     await this.animationManager.transition(token, coords, quat)
-    //return mapCoordsTo2d(token.coords);
+
   }
 
   public async detachTileFromField(token: any, hexField: any): Promise<void> {
@@ -225,6 +217,13 @@ export class SceneService {
     target.set(
       ((e.clientX / window.innerWidth) * 2 - 1),
       (-(e.clientY / window.innerHeight) * 2 + 1)
+    );
+  }
+
+  private _mapToNormalized2dCoords2(target: Vector2) {
+    target.set(
+      ((target.x / window.innerWidth) * 2 - 1),
+      (-(target.y / window.innerHeight) * 2 + 1)
     );
   }
 

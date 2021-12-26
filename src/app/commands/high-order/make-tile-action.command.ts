@@ -26,31 +26,38 @@ export class MakeTileAction extends BaseCommand {
   }
 
   execute(): void {
-    const result = this._sceneService.getTargetedElements(this._coords);
-    if (result.length > 0)
-    return;
-
     const currentState = this._gameState.getCurrentRoundState();
-    const utilizingTile = currentState?.utilizingTile
+    const utilizingTile = currentState?.utilizingTile;
+    const targetedField = this._sceneService.getTargetedField(this._coords);
 
-    if (!utilizingTile) {
+    if (!utilizingTile)
       return;
+    
+
+    const utilizedTileShouldBeAssignedToField = utilizingTile.type === TileType.Unit && !!targetedField && currentState.id === RoundStateName.UtilizingTile
+
+    if (utilizedTileShouldBeAssignedToField) {
+      this._assignTile(utilizingTile.id, targetedField);
+      this._
+    } else if () {
+
     }
 
-    if (utilizingTile.type === TileType.Unit) {
-      switch (currentState.id) {
-        case RoundStateName.UtilizingTile:
-          this._attachTile(utilizingTile.id, result[0] as any);
-          break;
-        case RoundStateName.TileManipulation:
-          this._moveTile(utilizingTile.id, result[0] as any);
-          break;
-        default:
-          break;
-      }
-    } else {
-      this._applyTile(utilizingTile.id);
-    }
+
+    // if (utilizedTileShouldBeAssignedToField) {
+    //   switch (currentState.id) {
+    //     case RoundStateName.UtilizingTile:
+    //       this._attachTile(utilizingTile.id, targetedField);
+    //       break;
+    //     case RoundStateName.TileManipulation:
+    //       this._moveTile(utilizingTile.id, targetedField);
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // } else if (utilizingTile.type === TileType.InstantAction) {
+    //   this._applyTile(utilizingTile.id);
+    // }
   }
 
   private _applyTile(tileId: string): void {
@@ -58,7 +65,7 @@ export class MakeTileAction extends BaseCommand {
     this._commandBus.dispatch(command);
   }
 
-  private _attachTile(currentTileId: string, targetFieldId: number): void {
+  private _assignTile(currentTileId: string, targetFieldId: number): void {
     const command = this._commandsFactory.assignTile(currentTileId, targetFieldId);
     this._commandBus.dispatch(command);
   }
