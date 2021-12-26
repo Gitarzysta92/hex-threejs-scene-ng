@@ -32,8 +32,6 @@ export class DrawTiles extends BaseCommand implements StateTransition<RoundState
 
   checkIfTransitionPossible(state: RoundState): boolean {
     this._newState = this._createNewState(state);
-
-    console.log(this._newState);
     return state.to(this._newState);
   }
 
@@ -48,11 +46,15 @@ export class DrawTiles extends BaseCommand implements StateTransition<RoundState
 
   private _drawTiles(holded: Tile[], limit: number): Tile[] {
     while(holded.length < limit) {
-      const id = Math.floor(Math.random() * 10);
+      const id = this._getRandomId();
       const tile = this._tilesRepositoryService.getTile(id);
       holded.push(tile)
     }
     return holded;
+  }
+
+  private _getRandomId(): number {
+    return Math.floor(Math.random() * 10);
   }
 
 }

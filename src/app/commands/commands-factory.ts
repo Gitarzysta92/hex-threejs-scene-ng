@@ -53,10 +53,10 @@ export class CommandsFactory {
     )
   }
 
-  public discardTiles(tileId: string): DiscardTiles {
+  public discardTiles(tileId: string[]): DiscardTiles {
     return new DiscardTiles(
       this._sceneService,
-      this._gameLogicService
+      this._gameStateService,
     ).setParameters(tileId);
   }
 

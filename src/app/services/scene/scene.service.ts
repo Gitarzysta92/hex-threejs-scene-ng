@@ -215,7 +215,6 @@ export class SceneService {
 
     //const asd = new Euler().setFromVector3(token.coords);
     const asd = new Quaternion().setFromAxisAngle(new Vector3(0,1,0), 1.3).multiply(token.mesh.quaternion);
-    console.log(asd);
     token.mesh.worldToLocal
     await this.animationManager.transition(token, prev, asd);
     //const intersection = view.intersect(getCoordinates({ x: event.clientX, y: event.clientY })).filter(i => i.object != dragManager.currentObject)[0];

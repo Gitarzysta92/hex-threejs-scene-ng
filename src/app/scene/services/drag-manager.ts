@@ -21,7 +21,7 @@ export class DragManager {
   
   public get currentObject() { return this._dragTask?.object }
 
-  private _dragTask: DragTask<any>;
+  private _dragTask!: DragTask<any>;
 
   constructor(
     private _view: GameView,
@@ -42,7 +42,6 @@ export class DragManager {
         const v = new Vector2(x, y);
         const found = this._view.intersect(v).filter(x => x.object instanceof PassiveObject);
         if (found.length === 0) return;
-        //console.log(found[0].point)
         this.position.next(found[0].point);
         return found[0].point;
       },
@@ -69,8 +68,8 @@ class DragTask<T extends Draggable> implements ContinousTask {
   public continue: boolean = true;
   public object: T;
 
-  private x: number;
-  private y: number;
+  private x!: number;
+  private y!: number;
 
   private _coordsProvider: (x: number, y: number) => Vector3 | false;
 
@@ -92,9 +91,7 @@ class DragTask<T extends Draggable> implements ContinousTask {
       });
   }
 
-
   public perform = () => {
-   // console.log(this.x, this.y)
     const coords = this._coordsProvider(this.x, this.y);
     if (!coords) return;
     coords.y = this.object.coords.y;

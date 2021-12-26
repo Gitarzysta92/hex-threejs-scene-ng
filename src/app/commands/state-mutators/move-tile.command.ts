@@ -19,7 +19,6 @@ export class MoveTile extends BaseCommand implements Revertable {
   }
 
   execute(): void {
-    const round = this._gameLogicService.createRound();
 
   }
 

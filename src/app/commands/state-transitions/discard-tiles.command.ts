@@ -2,6 +2,7 @@ import { BaseCommand } from "src/app/lib/command-bus/base-command";
 import { Revertable } from "src/app/lib/commands-stack/commands-stack.service";
 import { StateTransition } from "src/app/lib/state-machine/state";
 import { GameLogicService } from "src/app/services/game-logic/game-logic.service";
+import { GameStateService } from "src/app/services/game-state/game-state.service";
 import { SceneService } from "src/app/services/scene/scene.service";
 import { RoundState } from "src/app/state/round-state";
 import { RoundStateName } from "src/app/state/state-name.enum";
@@ -9,26 +10,41 @@ import { RoundStateName } from "src/app/state/state-name.enum";
 export class DiscardTiles extends BaseCommand implements StateTransition<RoundState>, Revertable {
 
   targetState: RoundStateName = RoundStateName.TilesManage
+  private _newState!: RoundState;
+  private _tilesToDrop!: string[];
 
   constructor(
     private readonly _sceneService: SceneService,
-    private readonly _gameLogicService: GameLogicService
+    private readonly _gameState: GameStateService
   ) {
     super();
   } 
 
-  setParameters(playerId: string): this { return this }
+  setParameters(tilesToDrop: string[]): this { 
+    this._tilesToDrop = tilesToDrop;
+    return this;
+  }
 
   execute(): void {
-    const round = this._gameLogicService.createRound();
+    this._gameState.applyRoundState(this._newState);
   }
 
   revert(): void { 
 
   }
 
-  checkIfTransitionPossible(prevState: RoundState): boolean {
-    return true;
+  checkIfTransitionPossible(state: RoundState): boolean {
+    this._newState = this._createNewState(state);
+    return state.to(this._newState);
+  }
+
+  private _createNewState(currentState: RoundState): RoundState {
+    return new RoundState({
+      id: this.targetState,
+      holdedTiles: (currentState?.prevRound?.holdedTiles || []).filter(t => !this._tilesToDrop.includes(t.id)),
+      playerId: currentState.playerId,
+      prevRound: currentState              
+    }); 
   }
 
 }

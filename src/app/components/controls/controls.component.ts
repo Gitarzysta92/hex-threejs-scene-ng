@@ -25,9 +25,6 @@ export class ControlsComponent implements OnInit {
   ) { 
     this.internalState = this._gameStateService.onStateChange
       .pipe(map(rs => rs.id))
-
-
-    this.internalState.subscribe(console.log)
   }
 
   ngOnInit(): void { 
@@ -45,7 +42,7 @@ export class ControlsComponent implements OnInit {
   }
 
   discardTiles(): void {
-    const command = this._command.discardTiles('1');
+    const command = this._command.discardTiles(['1']);
     this._commandBus.dispatch(command);  
   }
 

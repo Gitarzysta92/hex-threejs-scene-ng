@@ -24,7 +24,6 @@ export class PickTileForManipulation extends BaseCommand implements StateTransit
   }
 
   execute(): void {
-    const round = this._gameLogicService.createRound();
   }
 
   revert() { }

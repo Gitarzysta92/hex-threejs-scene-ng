@@ -26,9 +26,11 @@ export class TasksQueue {
   }
   public perform(): void {
     
-    if (this._queue.length === 0) return;
     const task = this._queue.shift();
-    //console.log(task )
+
+    if (!task)
+      return;
+
     task.perform();
 
     if (task.hasOwnProperty("continue") && (task as ContinousTask).continue) {
