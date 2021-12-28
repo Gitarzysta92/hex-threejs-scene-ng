@@ -14,6 +14,16 @@
   <button (click)="utilizeTile()">UtilizeTile</button>
 </ng-container>
 
+<ng-container *ngIf="round.UtilizeTile === (internalState | async)">
+  <button (click)="utilizeTile()">UtilizeTile</button>
+</ng-container>
+
+
+<ng-container *ngIf="round.TileManipulation === (internalState | async)">
+  <button (click)="detachTile()">DetachTile</button>
+  <button (click)="rotateTile()">RotateTile</button>
+</ng-container>
+
 
 
 

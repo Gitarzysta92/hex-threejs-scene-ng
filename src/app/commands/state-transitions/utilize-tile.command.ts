@@ -44,5 +44,4 @@ export class UtilizeTile extends BaseCommand implements StateTransition<RoundSta
       prevRound: currentState              
     }); 
   }
-
 }

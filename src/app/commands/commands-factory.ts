@@ -71,7 +71,7 @@ export class CommandsFactory {
   public pickTileForManipulation(tileId: string) {
     return new PickTileForManipulation(
       this._sceneService,
-      this._gameLogicService 
+      this._gameStateService,
     ).setParameters(tileId);
   }
 

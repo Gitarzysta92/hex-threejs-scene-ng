@@ -34,30 +34,27 @@ export class MakeTileAction extends BaseCommand {
       return;
     
 
-    const utilizedTileShouldBeAssignedToField = utilizingTile.type === TileType.Unit && !!targetedField && currentState.id === RoundStateName.UtilizingTile
+    const utilizedTileShouldBeAssignedToField = utilizingTile?.type === TileType.Unit && 
+      !!targetedField && currentState.id === RoundStateName.UtilizingTile;
 
     if (utilizedTileShouldBeAssignedToField) {
       this._assignTile(utilizingTile.id, targetedField);
-      this._
-    } else if () {
-
+      this._pickTileForManipulation(utilizingTile.id);
     }
 
+    const chooseTileToUtilization = !utilizingTile && targetedField.isOccupied() && 
+      currentState.id === RoundStateName.TilesManage;
 
-    // if (utilizedTileShouldBeAssignedToField) {
-    //   switch (currentState.id) {
-    //     case RoundStateName.UtilizingTile:
-    //       this._attachTile(utilizingTile.id, targetedField);
-    //       break;
-    //     case RoundStateName.TileManipulation:
-    //       this._moveTile(utilizingTile.id, targetedField);
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // } else if (utilizingTile.type === TileType.InstantAction) {
-    //   this._applyTile(utilizingTile.id);
-    // }
+    if (chooseTileToUtilization) {
+      const targetTileId = targetedField.getAssignedTileId();
+      this._pickTileForManipulation(targetTileId);
+    }
+
+    const isTargetedInstantAction = utilizingTile?.type === TileType.InstantAction && 
+      currentState.id === RoundStateName.TileManipulation
+    if (isTargetedInstantAction) {
+      this._applyTile(utilizingTile.id); 
+    }
   }
 
   private _applyTile(tileId: string): void {
@@ -74,4 +71,10 @@ export class MakeTileAction extends BaseCommand {
     const command = this._commandsFactory.moveTile(currentTileId, targetFieldId);
     this._commandBus.dispatch(command);
   }
+
+  private _pickTileForManipulation(currentTileId: string): void {
+    const command = this._commandsFactory.pickTileForManipulation(currentTileId);
+    this._commandBus.dispatch(command);
+  }
+
 }
