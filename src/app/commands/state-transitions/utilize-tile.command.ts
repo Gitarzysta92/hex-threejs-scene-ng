@@ -27,7 +27,7 @@ export class UtilizeTile extends BaseCommand implements StateTransition<RoundSta
 
   execute(): void {
     this._gameState.applyRoundState(this._newState);
-    this._sceneService.createToken(this._newState.utilizingTile.img);
+    this._sceneService.createToken(this._newState.utilizingTile.img, this._tileId);
   }
 
   checkIfTransitionPossible(state: RoundState): boolean {

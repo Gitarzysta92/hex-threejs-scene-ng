@@ -1,6 +1,5 @@
 import { BaseCommand } from "src/app/lib/command-bus/base-command";
 import { Revertable } from "src/app/lib/commands-stack/commands-stack.service";
-import { GameLogicService } from "src/app/services/game-logic/game-logic.service";
 import { SceneService } from "src/app/services/scene/scene.service";
 
 
@@ -10,22 +9,24 @@ export enum RotationDirection {
 }
 
 export class RotateTile extends BaseCommand implements Revertable {
-  private _playerId!: string;
+  private _tileId!: string;
+  private _direction!: RotationDirection;
 
   constructor(
     private readonly _sceneService: SceneService,
-    private readonly _gameLogicService: GameLogicService
   ) {
     super();
   } 
 
-  setParameters(playerId: string, direction: RotationDirection): this {
-    this._playerId = playerId;
+  setParameters(tileId: string, direction: RotationDirection): this {
+    this._tileId = tileId;
+    this._direction = direction;
     return this;
   }
 
   execute(): void {
-
+    const tile = this._sceneService.getTile(this._tileId);
+    this._sceneService.rotateToken(tile);
   }
 
   revert(): void {

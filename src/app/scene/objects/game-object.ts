@@ -16,6 +16,7 @@ export class GameObject implements Instantionable {
   private _onDestroy: ((x: this) => void)[]
   private _castShadow: boolean = false;
   private _receiveShadow: boolean = false;
+  auxId: any;
 
   public get id() { return this._mesh?.uuid }
   public get coords() { return this._mesh?.position }
@@ -26,11 +27,14 @@ export class GameObject implements Instantionable {
   constructor(cfg: { 
     o?: GameObjectOptions, 
     g: BufferGeometry, 
-    m: Material | Material[]
+    m: Material | Material[],
+    auxId?: any
   }) {
     this.geometry = cfg.g;
     this.material = cfg.m;
     this.initialCoords = cfg.o?.coords;
+    this.auxId = cfg.auxId;
+
     this._onDestroy = [];
     this._castShadow = cfg.o?.castShadow;
     this._receiveShadow = cfg.o?.receiveShadow;
@@ -157,9 +161,5 @@ export class TokenObject extends GameObject implements Draggable, Animatable {
     this._mesh.position.x = coords.x;
     this._mesh.position.y = coords.y;
     this._mesh.position.z = coords.z;
-  }
-
-  public asd() {
-    
   }
 }

@@ -92,8 +92,7 @@ export class CommandsFactory {
 
   public rotateTile(tileId: string, direction: RotationDirection): RotateTile {
     return new RotateTile(
-      this._sceneService,
-      this._gameLogicService 
+      this._sceneService
     ).setParameters(tileId, direction);
   }
 

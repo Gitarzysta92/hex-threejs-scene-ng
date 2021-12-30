@@ -79,7 +79,7 @@ export class SceneService {
     return this.view;
   }
 
-  public async createToken(img: string, takenFieldCallback?: (t: TokenObject) => Observable<any>) {
+  public async createToken(img: string, id: string) {
     const camera = this.view['_camera'];
 
     const ddd = new Vector3()
@@ -91,7 +91,7 @@ export class SceneService {
     let asd = camera.position.clone();
     asd.multiplyScalar(0.5)
 
-    const token = ObjectFactory.createHexToken(img, asd, g);
+    const token = ObjectFactory.createHexToken(img, asd, g, id);
 
     this.view.attach(token);
     token.mesh.applyQuaternion(d);
@@ -163,11 +163,13 @@ export class SceneService {
     //   });
   }
 
-  public getField(_targetFieldId: number) {
-    throw new Error("Method not implemented.");
+  public getField(targetFieldId: any) {
+
   }
-  public getTile(_tileId: string) {
-    throw new Error("Method not implemented.");
+
+  public getTile(tileId: any) {
+    const obj = this.view.gameObjects as unknown as TokenObject[];
+    return Object.values(obj).find(o => o.auxId === tileId);
   }
 
   public getTargetedElements(pointerCords: Coords): Intersection[] {
@@ -203,13 +205,14 @@ export class SceneService {
 
   public async rotateToken(token: any) {
     const prev = token.coords.clone();
-    await this.animationManager.transition(token, { y: 5 });
+    const elevated = token.coords.clone();
+    elevated.y = 5
+    await this.animationManager.transition(token, elevated);
 
     //const asd = new Euler().setFromVector3(token.coords);
     const asd = new Quaternion().setFromAxisAngle(new Vector3(0,1,0), 1.3).multiply(token.mesh.quaternion);
     token.mesh.worldToLocal
     await this.animationManager.transition(token, prev, asd);
-    //const intersection = view.intersect(getCoordinates({ x: event.clientX, y: event.clientY })).filter(i => i.object != dragManager.currentObject)[0];
   }
 
 

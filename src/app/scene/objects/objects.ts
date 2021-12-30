@@ -46,7 +46,7 @@ export class ObjectFactory {
     });
   }
 
-  static createHexToken(img: string = '', coords: Vector3, quaternion: Quaternion) {
+  static createHexToken(img: string = '', coords: Vector3, quaternion: Quaternion, auxId?: any) {
 
     const topMaterial = new THREE.MeshStandardMaterial({
       color: 0xb3cbef ,
@@ -68,10 +68,11 @@ export class ObjectFactory {
       o: { 
         coords, 
         castShadow: true, 
-        receiveShadow: true 
+        receiveShadow: true,
       },
       g: chess,
-      m: [material, topMaterial, material, material]
+      m: [material, topMaterial, material, material],
+      auxId
     });
 
     // const chessRaycaster = new THREE.Raycaster();
