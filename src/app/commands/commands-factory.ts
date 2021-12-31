@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CommandBusService } from "../lib/command-bus/command-bus.service";
+import { GameStateService } from "../services/game-state/game-state.service";
 import { RoundStateService } from "../services/round-state/round-state.service";
 import { Coords, SceneService } from "../services/scene/scene.service";
 import { TilesRepositoryService } from "../services/tiles-repository/tiles-repository.service";
@@ -24,30 +25,37 @@ export class CommandsFactory {
 
   constructor(
     private readonly _sceneService: SceneService,
-    private readonly _gameStateService: RoundStateService,
+    private readonly _gameStateService: GameStateService,
+    private readonly _roundStateService: RoundStateService,
     private readonly _tilesRepositoryService: TilesRepositoryService,
     private readonly _commandBusService: CommandBusService
   ) { }
 
   // state transitions
 
+  public startGame(players: Player[]) {
+    return new StartGame(
+      
+    )
+  }
+
   public startRound(playerId: string): StartNewRound {
     return new StartNewRound(
-      this._gameStateService
+      this._roundStateService
     ).setParameters(playerId);
   }
 
   public finishRound(): FinishRound {
     return new FinishRound(
       this._sceneService,
-      this._gameStateService,
+      this._roundStateService,
     )
   }
 
   public drawTiles(): DrawTiles {
     return new DrawTiles(
       this._sceneService,
-      this._gameStateService,
+      this._roundStateService,
       this._tilesRepositoryService
     )
   }
@@ -55,14 +63,14 @@ export class CommandsFactory {
   public discardTiles(tileId: string[]): DiscardTiles {
     return new DiscardTiles(
       this._sceneService,
-      this._gameStateService,
+      this._roundStateService,
     ).setParameters(tileId);
   }
 
   public utilizeTile(tileId: string) {
     return new UtilizeTile(
       this._sceneService,
-      this._gameStateService,
+      this._roundStateService,
       this._tilesRepositoryService
     ).setParameters(tileId);
   }
@@ -70,14 +78,14 @@ export class CommandsFactory {
   public pickTileForManipulation(tileId: string) {
     return new PickTileForManipulation(
       this._sceneService,
-      this._gameStateService,
+      this._roundStateService,
     ).setParameters(tileId);
   }
 
   public confirmTileAction() {
     return new ConfirmTileAction(
       this._sceneService,
-      this._gameStateService
+      this._roundStateService
     )
   }
 
@@ -104,7 +112,7 @@ export class CommandsFactory {
   public unasignTile(tileId: string): UnassignTile {
     return new UnassignTile(
       this._sceneService,
-      this._gameStateService
+      this._roundStateService
     ).setParameters(tileId);
   }
 
@@ -120,7 +128,7 @@ export class CommandsFactory {
     return new MakeTileAction(
       this._sceneService,
       this._commandBusService,
-      this._gameStateService,
+      this._roundStateService,
       this
     ).setParameters(viewportCoords)
   }

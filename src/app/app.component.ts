@@ -37,12 +37,6 @@ export class AppComponent implements OnInit {
 }
 
 
-// const field = intersection.distance;
-
-//     const token = this._sceneService.dragManager.currentObject;
-//     if (!!field) {
-//       this._sceneService.attachTokenToField(token, field);
-//     } 
 
 
 

@@ -4,7 +4,10 @@ import { map, tap } from 'rxjs/operators';
 import { CommandsFactory } from 'src/app/commands/commands-factory';
 import { RotationDirection } from 'src/app/commands/state-mutators/rotate-tile.command';
 import { CommandBusService } from 'src/app/lib/command-bus/command-bus.service';
+import { GameStateService } from 'src/app/services/game-state/game-state.service';
+import { PlayersRepositoryService } from 'src/app/services/players-repository/players-repository.service';
 import { RoundStateService } from 'src/app/services/round-state/round-state.service';
+import { GameStateName } from 'src/app/state/game/game-state-name.enum';
 import { RoundStateName } from 'src/app/state/round/round-state-name.enum';
 
 
@@ -15,21 +18,29 @@ import { RoundStateName } from 'src/app/state/round/round-state-name.enum';
 })
 export class ControlsComponent implements OnInit, OnDestroy {
 
-  public round = RoundStateName
+  public game = GameStateName;
+  public gameState: Observable<GameStateName>;
 
-  public internalState: Observable<RoundStateName>;
+  public round = RoundStateName;
+  public roundState: Observable<RoundStateName>;
   public isTileToUtilize: Observable<boolean>;
 
   constructor(
     private readonly _commandBus: CommandBusService,
     private readonly _command: CommandsFactory,
-    private readonly _gameStateService: RoundStateService
-  ) { 
-    this.internalState = this._gameStateService.onStateChange
-      .pipe(map(rs => rs.id))
+    private readonly _roundStateService: RoundStateService,
+    private readonly _gameStateService: GameStateService,
+    private readonly _playersRepository: PlayersRepositoryService
+  ) {
+    
+    this.gameState = this._gameStateService.onStateChange
+      .pipe(map(gs => gs.id))
 
-    this.isTileToUtilize = this._gameStateService.onStateChange
-      .pipe(map(rs => rs.holdedTiles.length > 0))
+    this.roundState = this._roundStateService.onStateChange
+      .pipe(map(rs => rs.id));
+
+    this.isTileToUtilize = this._roundStateService.onStateChange
+      .pipe(map(rs => rs.holdedTiles.length > 0));
   }
 
   ngOnInit(): void { 
@@ -39,6 +50,17 @@ export class ControlsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
 
   }
+
+  startGame(): void {
+    const players = this._playersRepository.getPlayers();
+
+    const command = this._command.startGame(players);
+    this._commandBus.dispatch(command);
+  }
+
+  //
+  // Round
+  //
 
   startRound(): void {
     const command = this._command.startRound('first');

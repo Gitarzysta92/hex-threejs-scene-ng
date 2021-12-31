@@ -1,39 +1,33 @@
-<ng-container *ngIf="round.Ended === (internalState | async)">
-  <button (click)="startRound()">Start round</button>
+<ng-container *ngIf="round.Ended === (gameState | async)">
+  <ng-container *ngIf="round.Ended === (roundState | async)">
+    <button (click)="startRound()">Start round</button>
+  </ng-container>
+  
+  <ng-container *ngIf="round.Started === (roundState | async)">
+    <button (click)="drawTiles()">Draw tiles</button>
+  </ng-container>
+  
+  <ng-container *ngIf="round.ChoosingTileToDiscard === (roundState | async)">
+    <button (click)="discardTiles()">Discard tiles</button>
+  </ng-container>
+  
+  <ng-container *ngIf="(round.TilesManage === (roundState | async)) && (isTileToUtilize | async)">
+    <button (click)="utilizeTile()">UtilizeTile</button>
+  </ng-container>
+  
+  <ng-container *ngIf="round.UtilizingTile === (roundState | async)">
+  </ng-container>
+  
+  
+  <ng-container *ngIf="round.TileManipulation === (roundState | async)">
+    <button (click)="unassignTile()">UnassignTile</button>
+    <button (click)="rotateTileLeft()">RotateTile Left</button>
+    <button (click)="rotateTileRight()">RotateTile Right</button>
+    <button (click)="confirmTileAction()">Confirm Tile Action</button>
+  </ng-container>
+  
+  
+  <ng-container *ngIf="round.TilesManage === (roundState | async)">
+    <button (click)="finishRound()">End round</button>
+  </ng-container>
 </ng-container>
-
-<ng-container *ngIf="round.Started === (internalState | async)">
-  <button (click)="drawTiles()">Draw tiles</button>
-</ng-container>
-
-<ng-container *ngIf="round.ChoosingTileToDiscard === (internalState | async)">
-  <button (click)="discardTiles()">Discard tiles</button>
-</ng-container>
-
-<ng-container *ngIf="(round.TilesManage === (internalState | async)) && (isTileToUtilize | async)">
-  <button (click)="utilizeTile()">UtilizeTile</button>
-</ng-container>
-
-<ng-container *ngIf="round.UtilizingTile === (internalState | async)">
-</ng-container>
-
-
-<ng-container *ngIf="round.TileManipulation === (internalState | async)">
-  <button (click)="unassignTile()">UnassignTile</button>
-  <button (click)="rotateTileLeft()">RotateTile Left</button>
-  <button (click)="rotateTileRight()">RotateTile Right</button>
-  <button (click)="confirmTileAction()">Confirm Tile Action</button>
-</ng-container>
-
-
-<ng-container *ngIf="round.TilesManage === (internalState | async)">
-  <button (click)="finishRound()">End round</button>
-</ng-container>
-
-
-
-
-
-
-
-
