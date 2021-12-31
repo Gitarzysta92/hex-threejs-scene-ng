@@ -2,12 +2,20 @@ import { Player } from "./player";
 
 
 export class Game {
-  public players: Player[];
-  public winner: Player | undefined;
-  
-  constructor(players: Player[]) {
-    this.players = players;
+  private _players: { [key: string]: Player } = {};
+  public winner!: Player;
+  public playersOrder: string[] = [];
+
+  public get currentPlayer() {
+    return this._players[]
   }
+  
+  constructor(data: Partial<Game> = {}) {
+    Object.assign(this, data);
+  }
+
+  
+
 };
 
 
