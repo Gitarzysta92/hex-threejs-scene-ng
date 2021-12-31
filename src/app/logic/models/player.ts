@@ -1,5 +1,11 @@
 export class Player {
-  constructor() {
-    
+  
+  nickname!: string;
+  armyId!: string;
+  life!: number;
+  initiative!: number;
+
+  constructor(data: Partial<Player> = {}) {
+    Object.assign(this, data);
   }
 }

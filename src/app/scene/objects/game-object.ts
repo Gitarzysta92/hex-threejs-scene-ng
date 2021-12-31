@@ -142,7 +142,7 @@ export class CointainerObject extends GameObject implements Collidable {
 
 export class TokenObject extends GameObject implements Draggable, Animatable {
 
-  takesField: string;
+  takesField!: string;
 
   public get mesh() { return this._mesh };
 

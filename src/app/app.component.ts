@@ -7,7 +7,7 @@ import { CommandsStackService, RevertableCommand } from './lib/commands-stack/co
 import { StateTransition } from './lib/state-machine/state';
 import { LoggerService } from './services/logger/logger.service';
 import { StateTransitionValidatorService } from './services/state-transition-validator/state-transition-validator.service';
-import { RoundState } from './state/round-state';
+import { RoundState } from './state/round/round-state';
 
 
 @Component({

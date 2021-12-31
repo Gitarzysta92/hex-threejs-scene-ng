@@ -1,6 +1,6 @@
-import { TransitionsScheme } from "../lib/state-machine/state";
+import { TransitionsScheme } from "../../lib/state-machine/state";
 import { RoundState } from "./round-state";
-import { RoundStateName } from "./state-name.enum";
+import { RoundStateName } from "./round-state-name.enum";
 
 export const roundStateTransitionRules: TransitionsScheme<RoundState> = {
   [RoundStateName.Started]: {

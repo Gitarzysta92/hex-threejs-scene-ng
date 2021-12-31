@@ -1,7 +1,7 @@
-import { State } from "../lib/state-machine/state";
-import { Round } from "../logic/models/round";
-import { Tile } from "../logic/models/tile";
-import { roundStateTransitionRules } from "./transition-rules";
+import { State } from "../../lib/state-machine/state";
+import { Round } from "../../logic/models/round";
+import { Tile } from "../../logic/models/tile";
+import { roundStateTransitionRules } from "./round-transition-rules";
 
 
 export class RoundState extends Round implements State {

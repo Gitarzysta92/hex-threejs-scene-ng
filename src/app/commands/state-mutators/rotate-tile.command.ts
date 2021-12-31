@@ -26,7 +26,7 @@ export class RotateTile extends BaseCommand implements Revertable {
 
   execute(): void {
     const tile = this._sceneService.getTile(this._tileId);
-    this._sceneService.rotateToken(tile);
+    this._sceneService.rotateToken(tile, this._direction === RotationDirection.Clockwise);
   }
 
   revert(): void {

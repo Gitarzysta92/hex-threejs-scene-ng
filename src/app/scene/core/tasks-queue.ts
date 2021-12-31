@@ -25,9 +25,7 @@ export class TasksQueue {
     this._queue.push(task);
   }
   public perform(): void {
-    
     const task = this._queue.shift();
-
     if (!task)
       return;
 

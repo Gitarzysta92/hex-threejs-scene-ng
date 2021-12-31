@@ -10,23 +10,20 @@
   <button (click)="discardTiles()">Discard tiles</button>
 </ng-container>
 
-<ng-container *ngIf="round.TilesManage === (internalState | async)">
+<ng-container *ngIf="(round.TilesManage === (internalState | async)) && (isTileToUtilize | async)">
   <button (click)="utilizeTile()">UtilizeTile</button>
 </ng-container>
 
 <ng-container *ngIf="round.UtilizingTile === (internalState | async)">
-  <button (click)="utilizeTile()">UtilizeTile</button>
 </ng-container>
 
 
 <ng-container *ngIf="round.TileManipulation === (internalState | async)">
-  <button (click)="detachTile()">DetachTile</button>
-  <button (click)="rotateTile()">RotateTile</button>
+  <button (click)="unassignTile()">UnassignTile</button>
+  <button (click)="rotateTileLeft()">RotateTile Left</button>
+  <button (click)="rotateTileRight()">RotateTile Right</button>
+  <button (click)="confirmTileAction()">Confirm Tile Action</button>
 </ng-container>
-
-
-
-
 
 
 <ng-container *ngIf="round.TilesManage === (internalState | async)">

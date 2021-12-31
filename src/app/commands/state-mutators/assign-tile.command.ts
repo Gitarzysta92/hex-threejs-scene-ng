@@ -5,7 +5,7 @@ import { SceneService } from "src/app/services/scene/scene.service";
 export class AssignTile extends BaseCommand implements Revertable {
 
   private _tileId!: string;
-  private _targetFieldId!: number;
+  private _targetFieldId!: string;
 
   constructor(
     private readonly _sceneService: SceneService,
@@ -13,7 +13,7 @@ export class AssignTile extends BaseCommand implements Revertable {
     super();
   }
 
-  setParameters(tileId: string, targetFieldId: number): this {
+  setParameters(tileId: string, targetFieldId: string): this {
     this._tileId = tileId;
     this._targetFieldId = targetFieldId;
 
@@ -21,13 +21,17 @@ export class AssignTile extends BaseCommand implements Revertable {
   }
 
   execute(): void {
-    this._sceneService.attachDraggedTileToField(this._targetFieldId);
+    this._sceneService.dragManager.stopDragging();
+    const tile = this._sceneService.getTile(this._tileId);
+    const field = this._sceneService.getField(this._targetFieldId);
+    this._sceneService.attachTileToField(tile, field);
   }
 
   revert(): void {
     const token = this._sceneService.getTile(this._tileId)
-    const field = this._sceneService.getField(this._targetFieldId)
-    this._sceneService.detachTileFromField(token, field);
+    if (!token)
+      return;
+    this._sceneService.detachTileFromField(token);
   };
   
 }

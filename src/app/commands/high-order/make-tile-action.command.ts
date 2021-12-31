@@ -1,9 +1,9 @@
 import { BaseCommand } from "src/app/lib/command-bus/base-command";
 import { CommandBusService } from "src/app/lib/command-bus/command-bus.service";
 import { TileType } from "src/app/logic/consts/hierarchical-tile-types-model";
-import { GameStateService } from "src/app/services/game-state/game-state.service";
+import { RoundStateService } from "src/app/services/round-state/round-state.service";
 import { Coords, SceneService } from "src/app/services/scene/scene.service";
-import { RoundStateName } from "src/app/state/state-name.enum";
+import { RoundStateName } from "src/app/state/round/round-state-name.enum";
 
 import { CommandsFactory } from "../commands-factory";
 
@@ -14,7 +14,7 @@ export class MakeTileAction extends BaseCommand {
   constructor(
     private readonly _sceneService: SceneService,
     private readonly _commandBus: CommandBusService,
-    private readonly _gameState: GameStateService,
+    private readonly _gameState: RoundStateService,
     private readonly _commandsFactory: CommandsFactory
   ) {
     super();
@@ -26,35 +26,61 @@ export class MakeTileAction extends BaseCommand {
   }
 
   execute(): void {
-    const currentState = this._gameState.getCurrentRoundState();
+    const currentState = this._gameState.getState();
     const utilizingTile = currentState?.utilizingTile;
     const targetedField = this._sceneService.getTargetedField(this._coords);
+    const tile = this._sceneService.getTile(utilizingTile.id);
 
-    if (!utilizingTile)
-      return;
-    
 
     const utilizedTileShouldBeAssignedToField = utilizingTile?.type === TileType.Unit && 
       !!targetedField && currentState.id === RoundStateName.UtilizingTile;
 
     if (utilizedTileShouldBeAssignedToField) {
-      this._assignTile(utilizingTile.id, targetedField);
+      this._assignTile(utilizingTile.id, targetedField.id);
       this._pickTileForManipulation(utilizingTile.id);
-    }
-
-    const chooseTileToUtilization = !utilizingTile && targetedField.isOccupied() && 
-      currentState.id === RoundStateName.TilesManage;
-
-    if (chooseTileToUtilization) {
-      const targetTileId = targetedField.getAssignedTileId();
-      this._pickTileForManipulation(targetTileId);
+      return;
     }
 
     const isTargetedInstantAction = utilizingTile?.type === TileType.InstantAction && 
-      currentState.id === RoundStateName.TileManipulation
+    currentState.id === RoundStateName.UtilizingTile
     if (isTargetedInstantAction) {
-      this._applyTile(utilizingTile.id); 
+      this._applyTile(utilizingTile.id);
+      return;
     }
+      
+
+    
+
+    const manipulatedTileShouldBeAssignedToField = utilizingTile?.type === TileType.Unit && 
+      !!targetedField && currentState.id === RoundStateName.TileManipulation && !tile?.takesField;
+    if (manipulatedTileShouldBeAssignedToField) {
+      this._assignTile(utilizingTile.id, targetedField.id);
+      return;
+    }
+      
+
+
+    const clickedTileShouldBeUnassignedFromField = 
+      utilizingTile?.type === TileType.Unit &&
+      currentState.id === RoundStateName.TileManipulation &&
+      !!tile?.takesField && 
+      targetedField?.id === tile?.takesField;
+    if (clickedTileShouldBeUnassignedFromField) {
+      this._unassignTile(utilizingTile.id);
+      return;
+    }
+      
+   
+    
+    const assignedTile = this._sceneService.getAssignedTile(targetedField?.id || '');
+    const chooseTileForManipulation = !!assignedTile && 
+      currentState.id === RoundStateName.TilesManage;
+    if (chooseTileForManipulation) {
+      this._pickTileForManipulation(assignedTile.id);
+      return;
+    }
+      
+
   }
 
   private _applyTile(tileId: string): void {
@@ -62,12 +88,17 @@ export class MakeTileAction extends BaseCommand {
     this._commandBus.dispatch(command);
   }
 
-  private _assignTile(currentTileId: string, targetFieldId: number): void {
+  private _assignTile(currentTileId: string, targetFieldId: string): void {
     const command = this._commandsFactory.assignTile(currentTileId, targetFieldId);
     this._commandBus.dispatch(command);
   }
 
-  private _moveTile(currentTileId: string, targetFieldId: number): void {
+  private _unassignTile(currentTileId: string): void {
+    const command = this._commandsFactory.unasignTile(currentTileId);
+    this._commandBus.dispatch(command);
+  }
+
+  private _moveTile(currentTileId: string, targetFieldId: string): void {
     const command = this._commandsFactory.moveTile(currentTileId, targetFieldId);
     this._commandBus.dispatch(command);
   }
