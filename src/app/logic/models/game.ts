@@ -1,29 +1,18 @@
 import { Player } from "./player";
 
-
 export class Game {
-  private _players: { [key: string]: Player } = {};
+  public players: { [key: string]: Player } = {};
   public winner!: Player;
   public playersOrder: string[] = [];
-
-  public get currentPlayer() {
-    return this._players[]
-  }
+  public currentPlayer!: string;
   
   constructor(data: Partial<Game> = {}) {
     Object.assign(this, data);
   }
-
-  
-
 };
 
 
-
-
-
-
-function checkIfAnyWinConditionHasMet() {
+function checkIfAnyWinConditionHasMet(game: Game): boolean {
   const atLeastOnePlayerHasZeroLife = false;
   const gameTimeIsOver = false;
   const lastFightHasBeenFought = false; 

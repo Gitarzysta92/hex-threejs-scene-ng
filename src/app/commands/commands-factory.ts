@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CommandBusService } from "../lib/command-bus/command-bus.service";
+import { Player } from "../logic/models/player";
 import { GameStateService } from "../services/game-state/game-state.service";
 import { RoundStateService } from "../services/round-state/round-state.service";
 import { Coords, SceneService } from "../services/scene/scene.service";
@@ -15,6 +16,7 @@ import { DiscardTiles } from "./state-transitions/discard-tiles.command";
 import { DrawTiles } from "./state-transitions/draw-tiles.command";
 import { FinishRound } from "./state-transitions/finish-round.command";
 import { PickTileForManipulation } from "./state-transitions/pick-tile-for-manipulation.command";
+import { StartGame } from "./state-transitions/start-game.command";
 import { StartNewRound } from "./state-transitions/start-new-round.command";
 import { UtilizeTile } from "./state-transitions/utilize-tile.command";
 
@@ -35,7 +37,8 @@ export class CommandsFactory {
 
   public startGame(players: Player[]) {
     return new StartGame(
-      
+      this._roundStateService,
+      this._gameStateService
     )
   }
 

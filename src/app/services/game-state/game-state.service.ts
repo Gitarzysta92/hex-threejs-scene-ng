@@ -1,24 +1,27 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { GameState } from 'src/app/state/game/game-state';
+import { GameStateName } from 'src/app/state/game/game-state-name.enum';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GameStateService {
-  private _roundState: GameState = new GameState({
-    id: GameStateName.Started
-  });
-  
-  public onStateChange: BehaviorSubject<GameState> = new BehaviorSubject(this._roundState)
+export class GameStateService {  
+  public onStateChange: BehaviorSubject<GameState>;
 
-  constructor() { }
+  constructor() { 
+    const initState = new GameState({
+      id: GameStateName.Preparation
+    });
+
+    this.onStateChange = new BehaviorSubject(initState);
+  }
 
   applyState(state: GameState): void {
-    this._roundState = state;
-    this.onStateChange.next(this._roundState);
+    this.onStateChange.next(state);
   }
 
   getState(): GameState {
-    return this._roundState;
+    return this.onStateChange.value;
   }
 }

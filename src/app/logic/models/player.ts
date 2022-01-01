@@ -1,5 +1,5 @@
 export class Player {
-  
+  uuid!: string;
   nickname!: string;
   armyId!: string;
   life!: number;
