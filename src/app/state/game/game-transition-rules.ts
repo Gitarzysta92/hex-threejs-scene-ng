@@ -1,4 +1,5 @@
-import { TransitionsScheme } from "src/app/lib/state-machine/state";  
+import { TransitionsScheme, TransitionsScheme2 } from "src/app/lib/state-machine/state";  
+import { Game } from "src/app/logic/models/game";
 import { GameState } from "./game-state";
 import { GameStateName } from "./game-state-name.enum";
 
@@ -13,7 +14,7 @@ export const gameStateTransitionRules: TransitionsScheme<GameState> = {
 }
 
 
-export const gameStateTransitionRules2 = {
+export const gameStateTransitionRules2: TransitionsScheme2<GameState> = {
   [GameStateName.Preparation]: {
     [GameStateName.Started]: {
       validators: [isAllPlayersAreReady],
@@ -30,12 +31,12 @@ export const gameStateTransitionRules2 = {
 
 
 // infrastructure
-function isAllPlayersAreReady() {
-
+function isAllPlayersAreReady(state: GameState): boolean {
+  return true;
 }
 
 // game logic
-function isAnyWinConditionsHasBeenMet() {
+function isAnyWinConditionsHasBeenMet(state: Game): boolean {
   const atLeastOnePlayerHasZeroLife = false;
   const gameTimeIsOver = false;
   const lastFightHasBeenFought = false; 
