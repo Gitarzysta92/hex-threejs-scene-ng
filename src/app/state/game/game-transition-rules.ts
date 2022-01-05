@@ -11,3 +11,44 @@ export const gameStateTransitionRules: TransitionsScheme<GameState> = {
     [GameStateName.Ended]: (state: GameState) => true
   }
 }
+
+
+export const gameStateTransitionRules2 = {
+  [GameStateName.Preparation]: {
+    [GameStateName.Started]: {
+      validators: [isAllPlayersAreReady],
+      mutators: [randomizePlayersOrder]
+    }
+  },
+  [GameStateName.Started]: {
+    [GameStateName.Ended]: {
+      validators: [isAnyWinConditionsHasBeenMet],
+      mutators: [setGameWinner]
+    }
+  }
+}
+
+
+// infrastructure
+function isAllPlayersAreReady() {
+
+}
+
+// game logic
+function isAnyWinConditionsHasBeenMet() {
+  const atLeastOnePlayerHasZeroLife = false;
+  const gameTimeIsOver = false;
+  const lastFightHasBeenFought = false; 
+
+  return atLeastOnePlayerHasZeroLife ||
+    gameTimeIsOver  ||
+    lastFightHasBeenFought
+}
+
+function randomizePlayersOrder() {
+
+}
+
+function setGameWinner() {
+
+}

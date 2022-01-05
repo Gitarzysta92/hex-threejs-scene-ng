@@ -9,3 +9,12 @@ export interface StateTransition<T extends State> {
 }
 
 export type TransitionsScheme<T extends State> = { [key: number]: { [key: number]: (state: T) => boolean } }
+
+export type TransitionsScheme2<T extends State> = { 
+  [key: number]: { 
+    [key: number]: {
+      validators: Array<(state: T) => boolean>,
+      mutators: Array<(state: T) => T>
+    } 
+  } 
+}

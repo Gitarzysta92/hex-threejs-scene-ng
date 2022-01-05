@@ -11,13 +11,3 @@ export class Game {
   }
 };
 
-
-function checkIfAnyWinConditionHasMet(game: Game): boolean {
-  const atLeastOnePlayerHasZeroLife = false;
-  const gameTimeIsOver = false;
-  const lastFightHasBeenFought = false; 
-
-  return atLeastOnePlayerHasZeroLife ||
-    gameTimeIsOver  ||
-    lastFightHasBeenFought
-}
