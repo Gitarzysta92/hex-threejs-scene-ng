@@ -14,7 +14,7 @@ export type TransitionsScheme2<T extends State> = {
   [key: number]: { 
     [key: number]: {
       validators: Array<(state: T) => boolean>,
-      mutators: Array<(state: T) => T>
+      mutators: Array<(state: T) => Partial<T>>
     } 
   } 
 }

@@ -1,31 +1,33 @@
-import { TransitionsScheme, TransitionsScheme2 } from "src/app/lib/state-machine/state";  
+import { TransitionsScheme2 } from "src/app/lib/state-machine/state";  
 import { Game } from "src/app/logic/models/game";
 import { GameState } from "./game-state";
 import { GameStateName } from "./game-state-name.enum";
 
-
-export const gameStateTransitionRules: TransitionsScheme<GameState> = {
-  [GameStateName.Preparation]: {
-    [GameStateName.Started]: (state: GameState) => true
-  },
-  [GameStateName.Started]: {
-    [GameStateName.Ended]: (state: GameState) => true
-  }
+const gameEnded = {
+  validators: [isAnyWinConditionsHasBeenMet],
+  mutators: [setGameWinner]
 }
 
-
-export const gameStateTransitionRules2: TransitionsScheme2<GameState> = {
+export const gameStateTransitionRules: TransitionsScheme2<GameState> = {
   [GameStateName.Preparation]: {
-    [GameStateName.Started]: {
+    [GameStateName.Round]: {
       validators: [isAllPlayersAreReady],
-      mutators: [randomizePlayersOrder]
+      mutators: [randomizePlayersOrder, pickNextPlayer]
     }
   },
-  [GameStateName.Started]: {
-    [GameStateName.Ended]: {
-      validators: [isAnyWinConditionsHasBeenMet],
-      mutators: [setGameWinner]
-    }
+  [GameStateName.Round]: {
+    [GameStateName.Battle]: {
+      validators: [isBattleTileWasUsed],
+      mutators: [calculateBattleResults]
+    },
+    [GameStateName.Ended]: gameEnded
+  },
+  [GameStateName.Battle]: {
+    [GameStateName.Round]: {
+      validators: [isBattleEnded],
+      mutators: [pickNextPlayer]
+    },
+    [GameStateName.Ended]: gameEnded
   }
 }
 
@@ -46,10 +48,10 @@ function isAnyWinConditionsHasBeenMet(state: Game): boolean {
     lastFightHasBeenFought
 }
 
-function randomizePlayersOrder() {
-
+function randomizePlayersOrder(state: Game): Game {
+  return state;
 }
 
-function setGameWinner() {
-
+function setGameWinner(state: Game): Game {
+  return state;
 }

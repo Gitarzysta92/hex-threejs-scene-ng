@@ -1,5 +1,7 @@
 export enum GameStateName {
   Preparation,
   Started,
-  Ended
+  Ended,
+  Round,
+  Battle
 }
