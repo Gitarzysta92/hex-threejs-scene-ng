@@ -8,9 +8,10 @@ import { RoundStateName } from "src/app/state/round/round-state-name.enum";
 
 export class DiscardTiles extends BaseCommand implements StateTransition<RoundState>, Revertable {
 
-  targetState: RoundStateName = RoundStateName.TilesManage
+  targetState: RoundStateName = RoundStateName.TilesManage;
   private _newState!: RoundState;
-  private _tilesToDrop!: string[];
+  private _tilesToDiscard!: string[];
+  private _prevState!: RoundState;
 
   constructor(
     private readonly _sceneService: SceneService,
@@ -19,32 +20,19 @@ export class DiscardTiles extends BaseCommand implements StateTransition<RoundSt
     super();
   } 
 
-  setParameters(tilesToDrop: string[]): this { 
-    this._tilesToDrop = tilesToDrop;
+  setParameters(tilesToDiscard: string[]): this { 
+    this._tilesToDiscard = tilesToDiscard;
     return this;
   }
 
   execute(): void {
-    this._gameState.applyState(this._newState);
+    this._prevState = this._gameState.getState();
+    this._gameState.applyState(this.targetState, { tilesToDiscard: this._tilesToDiscard});
   }
 
-  revert(): void { 
-
-  }
+  revert(): void { }
 
   checkIfTransitionPossible(state: RoundState): boolean {
-    this._newState = this._createNewState(state);
-    return state.to(this._newState);
+    return state.to(this.targetState);
   }
-
-  private _createNewState(currentState: RoundState): RoundState {
-    return new RoundState({
-      id: this.targetState,
-      holdedTiles: (currentState?.holdedTiles || [])
-        .filter(t => !this._tilesToDrop.some(id => t.id === id)),
-      playerId: currentState.playerId,
-      prevRound: currentState              
-    }); 
-  }
-
 }

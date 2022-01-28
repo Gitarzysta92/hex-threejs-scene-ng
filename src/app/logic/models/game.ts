@@ -1,13 +1,14 @@
+import { Board } from "./board";
 import { Player } from "./player";
 
-export class Game {
-  public players: { [key: string]: Player } = {};
+export abstract class Game {
+  public players: Player[] = [];
+
   public winner!: Player;
-  public playersOrder: string[] = [];
-  public currentPlayer!: string;
+  public currentPlayer!: Player;
+  public playersOrder!: Player;
+  public board!: Board;
+
   
-  constructor(data: Partial<Game> = {}) {
-    Object.assign(this, data);
-  }
 };
 

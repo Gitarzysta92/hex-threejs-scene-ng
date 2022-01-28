@@ -27,17 +27,7 @@ export class StartNewRound extends BaseCommand implements StateTransition<RoundS
     this._roundState.applyState(this._newState);
   }
 
-  private _createNewState(currentState: RoundState): RoundState {
-    return Object.assign(currentState, new RoundState({
-      id: this.targetState,
-      holdedTiles: currentState.prevRound.holdedTiles,
-      playerId: currentState.playerId,
-      prevRound: currentState              
-    })); 
-  }
-
   checkIfTransitionPossible(state: RoundState): boolean {
-    this._newState = this._createNewState(state);
-    return state.to(this._newState);
+    return state.to(this.targetState);
   }
 }

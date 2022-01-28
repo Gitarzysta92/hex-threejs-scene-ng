@@ -4,6 +4,10 @@ import { playerStateTransitionRules } from "./player-transition-rules";
 
 export class PlayerState extends Player implements State {
   id!: number;
+  holdedTiles: any;
+  deck: any;
+
+
 
   constructor(data: Partial<PlayerState> = {}) {
     super(data);

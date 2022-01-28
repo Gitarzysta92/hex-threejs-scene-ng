@@ -6,14 +6,14 @@ import { RoundStateName } from "./round-state-name.enum";
 export const roundStateTransitionRules2: TransitionsScheme2<RoundState> = {
   [RoundStateName.Started]: {
     [RoundStateName.ChoosingTileToDiscard]: {
-      validators: [isPlayerHaveThreeTiles],
+      validators: [],
       mutators: [drawTiles]
     },
   },
   [RoundStateName.ChoosingTileToDiscard]: {
     [RoundStateName.TilesManage]: {
-      validators: [isPlayerHaveTwoTiles],
-      mutators: []
+      validators: [isPlayerChooseTilesToDiscard],
+      mutators: [discardTiles]
     },
   },
   [RoundStateName.TilesManage]: {
@@ -43,6 +43,31 @@ export const roundStateTransitionRules2: TransitionsScheme2<RoundState> = {
     },
   },
 }
+
+
+function drawTiles(round: RoundState): RoundState {
+  const holded = round.player.holdedTiles;
+  const deck = round.player.deck;
+
+  while(holded.length < round.tilesLimit) {
+    holded.push(deck.pop());
+  }
+
+  return round;
+}
+
+function discardTiles(round: RoundState): RoundState {
+  
+}
+
+
+
+function isPlayerChooseTilesToDiscard(round: RoundState): boolean {
+  return round.tilesToDiscard.length > 0;
+}
+
+
+
 
 
 
