@@ -5,7 +5,7 @@ export interface State {
 
 export interface StateTransition<T extends State> {
   checkIfTransitionPossible: (prevState: T) => boolean
-  targetState: number;
+  newState: T;
 }
 
 export type TransitionsScheme<T extends State> = { [key: number]: { [key: number]: (state: T) => boolean } }

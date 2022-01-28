@@ -1,11 +1,16 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Injector } from "@angular/core";
 import { resolve } from "dns";
+import { BaseCommand } from "../lib/command-bus/base-command";
 import { CommandBusService } from "../lib/command-bus/command-bus.service";
 import { Player } from "../logic/models/player";
+import { Tile } from "../logic/models/tile";
 import { GameStateService } from "../services/game-state/game-state.service";
 import { RoundStateService } from "../services/round-state/round-state.service";
 import { Coords, SceneService } from "../services/scene/scene.service";
 import { TilesRepositoryService } from "../services/tiles-repository/tiles-repository.service";
+import { GameState } from "../state/game/game-state";
+import { PlayerState } from "../state/player/player-state";
+import { RoundState } from "../state/round/round-state";
 import { MakeTileAction } from "./high-order/make-tile-action.command";
 import { ApplyTile } from "./state-mutators/apply-tile.command";
 import { AssignTile } from "./state-mutators/assign-tile.command";
@@ -27,110 +32,37 @@ import { UtilizeTile } from "./state-transitions/utilize-tile.command";
 export class CommandsFactory {
 
   constructor(
-    private readonly _sceneService: SceneService,
-    private readonly _gameStateService: GameStateService,
     private readonly _roundStateService: RoundStateService,
-    private readonly _tilesRepositoryService: TilesRepositoryService,
-    private readonly _commandBusService: CommandBusService
+    private readonly _gameStateService: GameStateService,
+    private readonly _playerStateService: PlayerStateService
   ) { }
 
-  // state transitions
-
-  public startGame(players: Player[]) {
-    return new StartGame(
-      this._roundStateService,
-      this._gameStateService
-    )
-  }
-
-  public startRound(playerId: string): StartNewRound {
-    return new StartNewRound(
-      this._roundStateService
-    ).setParameters(playerId);
-  }
-
-  public finishRound(): FinishRound {
-    return new FinishRound(
-      this._sceneService,
-      this._roundStateService,
-    )
-  }
-
-  public drawTiles(): DrawTiles {
-    return new DrawTiles(
-      this._sceneService,
-      this._roundStateService,
-      this._tilesRepositoryService
-    )
-  }
-
-  public discardTiles(tileId: string[]): DiscardTiles {
-    return initCommand(DiscardTiles).setParameters(tileId);
-  }
-
-  public utilizeTile(tileId: string) {
-    return new UtilizeTile(
-      this._sceneService,
-      this._roundStateService,
-      this._tilesRepositoryService
-    ).setParameters(tileId);
-  }
-
-  public pickTileForManipulation(tileId: string) {
-    return new PickTileForManipulation(
-      this._sceneService,
-      this._roundStateService,
-    ).setParameters(tileId);
-  }
-
-  public confirmTileAction() {
-    return new ConfirmTileAction(
-      this._sceneService,
-      this._roundStateService
-    )
-  }
-
-  // state mutators
-
-  public moveTile(tileId: string, targetFieldId: string): MoveTile {
-    return new MoveTile(
-      this._sceneService,
-    ).setParameters(tileId, targetFieldId);
-  }
-
-  public rotateTile(tileId: string, direction: RotationDirection): RotateTile {
-    return new RotateTile(
-      this._sceneService
-    ).setParameters(tileId, direction);
-  }
-
-  public assignTile(tileId: string, targetFieldId: string): AssignTile {
-    return new AssignTile(
-      this._sceneService
-    ).setParameters(tileId, targetFieldId)
-  }
-
-  public unasignTile(tileId: string): UnassignTile {
-    return new UnassignTile(
-      this._sceneService,
-      this._roundStateService
-    ).setParameters(tileId);
-  }
-
-  public applyTile(tileId: string): ApplyTile {
-    return new ApplyTile(
-      this._sceneService
-    ).setParameters(tileId);
-  }
-
-  // high order
-
-  public makeTileAction(viewportCoords: Coords): MakeTileAction {
-    return new MakeTileAction(
-      this._sceneService,
-      this._commandBusService,
-      this._roundStateService,
-      this
-    ).setParameters(viewportCoords)
+  public create<T>(command: new(...args: any[]) => T): T {
+    return Injector.create({
+      providers: [
+        {
+          provide: command, 
+          deps: [
+            SceneService,
+            GameStateService,
+            RoundStateService,
+            TilesRepositoryService,
+            CommandBusService,
+            {
+              provide: RoundState,
+              useFactory: this._roundStateService.getState(),
+            },
+            {
+              provide: GameState,
+              useFactory: this._gameStateService.getState(),
+            },
+            {
+              provide: PlayerState,
+              useFactory: this._playerStateService.getState(),
+            }
+          ]
+        }
+      ]
+    }).get(command);
   }
 }
