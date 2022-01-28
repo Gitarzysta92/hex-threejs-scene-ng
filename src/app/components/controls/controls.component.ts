@@ -3,7 +3,15 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { CommandsFactory } from 'src/app/commands/commands-factory';
 import { RotationDirection } from 'src/app/commands/state-mutators/rotate-tile.command';
+import { UnassignTile } from 'src/app/commands/state-mutators/unassign-tile.command';
+import { DiscardTiles } from 'src/app/commands/state-transitions/discard-tiles.command';
+import { DrawTiles } from 'src/app/commands/state-transitions/draw-tiles.command';
+import { PickTileForManipulation } from 'src/app/commands/state-transitions/pick-tile-for-manipulation.command';
+import { StartGame } from 'src/app/commands/state-transitions/start-game.command';
+import { StartNewRound } from 'src/app/commands/state-transitions/start-new-round.command';
+import { UtilizeTile } from 'src/app/commands/state-transitions/utilize-tile.command';
 import { CommandBusService } from 'src/app/lib/command-bus/command-bus.service';
+import { Tile } from 'src/app/logic/models/tile';
 import { GameStateService } from 'src/app/services/game-state/game-state.service';
 import { PlayersRepositoryService } from 'src/app/services/players-repository/players-repository.service';
 import { RoundStateService } from 'src/app/services/round-state/round-state.service';
@@ -34,10 +42,10 @@ export class ControlsComponent implements OnInit, OnDestroy {
   ) {
     
     this.gameState = this._gameStateService.onStateChange
-      .pipe(map(gs => gs.id))
+      .pipe(map(gs => gs.name))
 
     this.roundState = this._roundStateService.onStateChange
-      .pipe(map(rs => rs.id));
+      .pipe(map(rs => rs.name));
 
     this.isTileToUtilize = this._roundStateService.onStateChange
       .pipe(map(rs => rs.holdedTiles.length > 0));
@@ -54,7 +62,9 @@ export class ControlsComponent implements OnInit, OnDestroy {
   startGame(): void {
     const players = this._playersRepository.getPlayers();
 
-    const command = this._command.startGame(players);
+    const command = this._command
+      .create(StartGame)
+      .setParameters(players);
     this._commandBus.dispatch(command);
   }
 
@@ -63,43 +73,58 @@ export class ControlsComponent implements OnInit, OnDestroy {
   //
 
   startRound(): void {
-    const command = this._command.startRound('first');
+    const command = this._command.create(StartNewRound);
     this._commandBus.dispatch(command);  
   }
 
   drawTiles(): void {
-    const command = this._command.drawTiles();
+    const command = this._command.create(DrawTiles);
     this._commandBus.dispatch(command);  
   }
 
   discardTiles(): void {
     const state = this._gameStateService.getState();
     const tileToDiscard = state.holdedTiles[0]
-    const command = this._command.discardTiles([tileToDiscard.id]);
+    const command = this._command
+      .create(DiscardTiles)
+      .setParameters(tileToDiscard);
     this._commandBus.dispatch(command);  
   }
 
   utilizeTile(): void {
     const state = this._gameStateService.getState();
-    const tileToCreate = state.holdedTiles[0];
-    if (!tileToCreate)
+    const tile = state.holdedTiles[0];
+    if (!tile)
       return;
 
-    const command = this._command.utilizeTile(tileToCreate.id);
+    const command = this._command
+      .create(UtilizeTile)
+      .setParameters(tile);
     this._commandBus.dispatch(command);
   }
 
   pickTileForManipulation(): void {
-    const command = this._command.pickTileForManipulation('1');
+    const command = this._command
+      .create(PickTileForManipulation)
+      .setParameters('1');
     this._commandBus.dispatch(command);
   }
 
-  unassignTile(): void {
-    const state = this._gameStateService.getState();
-    const tile = state.utilizingTile;
-    const command = this._command.unasignTile(tile.id);
-    this._commandBus.dispatch(command);
-  }
+  // unassignTile(): void {
+  //   let command;
+
+  //   if (!tile.canBeUnassigned()) {
+  //     command = this._command
+  //       .create(UnassignTile)
+  //       .setParameters(tile.id);
+  //   } else {
+  //     command = this._command
+  //       .create
+
+  //   }
+
+  //   this._commandBus.dispatch(command);
+  // }
 
   rotateTileLeft(): void {
     const state = this._gameStateService.getState();
