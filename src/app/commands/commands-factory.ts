@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { resolve } from "dns";
 import { CommandBusService } from "../lib/command-bus/command-bus.service";
 import { Player } from "../logic/models/player";
 import { GameStateService } from "../services/game-state/game-state.service";
@@ -64,10 +65,7 @@ export class CommandsFactory {
   }
 
   public discardTiles(tileId: string[]): DiscardTiles {
-    return new DiscardTiles(
-      this._sceneService,
-      this._roundStateService,
-    ).setParameters(tileId);
+    return initCommand(DiscardTiles).setParameters(tileId);
   }
 
   public utilizeTile(tileId: string) {

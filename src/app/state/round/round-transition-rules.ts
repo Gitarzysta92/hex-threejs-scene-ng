@@ -18,7 +18,7 @@ export const roundStateTransitionRules2: TransitionsScheme2<RoundState> = {
   },
   [RoundStateName.TilesManage]: {
     [RoundStateName.UtilizingTile]: {
-      validators: [isPlayerReady, isPlayerRoundStarted],
+      validators: [isPlayerHas],
       mutators: [drawTiles]
     },
     [RoundStateName.TileManipulation]: {
@@ -57,7 +57,8 @@ function drawTiles(round: RoundState): RoundState {
 }
 
 function discardTiles(round: RoundState): RoundState {
-  
+  round.holdedTiles = round.holdedTiles.filter(t => round.tilesToDiscard.some(id => t.id === id));
+  return round;  
 }
 
 
