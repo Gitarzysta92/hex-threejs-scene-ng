@@ -41,46 +41,44 @@ export class MakeTileAction extends BaseCommand {
       return;
     }
 
+
     const isTargetedInstantAction = utilizingTile?.type === TileType.InstantAction && 
-    currentState.id === RoundStateName.UtilizingTile
+    currentState.id === RoundStateName.UtilizingTile;
+
     if (isTargetedInstantAction) {
       this._applyTile(utilizingTile.id);
       return;
     }
       
 
-    
-
     const manipulatedTileShouldBeAssignedToField = utilizingTile?.type === TileType.Unit && 
       !!targetedField && currentState.id === RoundStateName.TileManipulation && !tile?.takesField;
+
     if (manipulatedTileShouldBeAssignedToField) {
       this._assignTile(utilizingTile.id, targetedField.id);
       return;
     }
       
 
-
     const clickedTileShouldBeUnassignedFromField = 
       utilizingTile?.type === TileType.Unit &&
       currentState.id === RoundStateName.TileManipulation &&
-      !!tile?.takesField && 
-      targetedField?.id === tile?.takesField;
+      !!tile?.takesField && targetedField?.id === tile?.takesField;
+
     if (clickedTileShouldBeUnassignedFromField) {
       this._unassignTile(utilizingTile.id);
       return;
     }
       
    
-    
     const assignedTile = this._sceneService.getAssignedTile(targetedField?.id || '');
     const chooseTileForManipulation = !!assignedTile && 
       currentState.id === RoundStateName.TilesManage;
+
     if (chooseTileForManipulation) {
       this._pickTileForManipulation(assignedTile.id);
       return;
     }
-      
-
   }
 
   private _applyTile(tileId: string): void {

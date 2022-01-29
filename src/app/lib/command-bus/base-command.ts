@@ -1,9 +1,15 @@
 import { Observable } from "rxjs";
 
+export type Command<T extends BaseCommand> = Pick<T, 'setParameters'>;
+
+
 export abstract class BaseCommand {
   abstract execute(): void;
-  abstract setParameters(...args: any[]): this;
   public isConsumed!: boolean;
+}
+
+export interface BaseCommand {
+  setParameters(...args: any[]): Command<this>;
 }
 
 export abstract class AsyncBaseCommand extends BaseCommand {

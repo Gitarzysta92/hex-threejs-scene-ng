@@ -3,9 +3,12 @@ export interface State {
   to: (nextState: any) => boolean;
 }
 
+export type ValidatableState<T extends State> = Pick<T, keyof State>;
+
 export interface StateTransition<T extends State> {
-  checkIfTransitionPossible: (prevState: T) => boolean
+  checkIfTransitionPossible: (prevState: ValidatableState<T>) => boolean
   newState: T;
+  targetStateName: number;
 }
 
 export type TransitionsScheme<T extends State> = { [key: number]: { [key: number]: (state: T) => boolean } }

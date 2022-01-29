@@ -24,7 +24,7 @@ import { RoundStateName } from 'src/app/state/round/round-state-name.enum';
   templateUrl: './controls.component.html',
   styleUrls: ['./controls.component.css']
 })
-export class ControlsComponent implements OnInit, OnDestroy {
+export class ControlsComponent {
 
   public game = GameStateName;
   public gameState: Observable<GameStateName>;
@@ -49,14 +49,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
 
     this.isTileToUtilize = this._roundStateService.onStateChange
       .pipe(map(rs => rs.holdedTiles.length > 0));
-  }
-
-  ngOnInit(): void { 
-    
-  }
-
-  ngOnDestroy(): void {
-
   }
 
   startGame(): void {

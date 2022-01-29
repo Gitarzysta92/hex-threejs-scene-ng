@@ -5,10 +5,9 @@ import { GameStateName } from "./game-state-name.enum";
 import { gameStateTransitionRules } from "./game-transition-rules";
 
 export class GameState extends Game implements State {
+ 
   id!: number;
   round: any;
-
-
 
   constructor(data: Partial<GameState> = {}) {
     super();
@@ -24,5 +23,19 @@ export class GameState extends Game implements State {
 
   to2(nextState: GameStateName): boolean {
     return gameStateTransitionRules[this.id][nextState]?.call(null, this)
+  }
+
+
+  setState(targetStateName: GameStateName) {
+    throw new Error("Method not implemented.");
+  }
+  apply() {
+    throw new Error("Method not implemented.");
+  }
+  setPlayers(player: any) {
+    throw new Error("Method not implemented.");
+  }
+  clone(): GameState {
+    throw new Error("Method not implemented.");
   }
 }

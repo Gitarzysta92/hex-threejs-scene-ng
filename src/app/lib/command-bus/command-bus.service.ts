@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BaseCommand } from './base-command';
+import { BaseCommand, Command } from './base-command';
 
 export interface CommandBusFilter<T> {
   filter: (command: T) => boolean;
@@ -29,14 +29,14 @@ export class CommandBusService {
 
   constructor() { }
 
-  public dispatch(command: BaseCommand): void {
+  public dispatch<T extends BaseCommand>(command: Command<T>): void {
     for (let a of this._asd) {
       const result = a(command);
       if (result === false)
         break;
     }
 
-
+    // Old solution
     // const isNotPassedVerification = this._filters.some(f => !f.filter(command));
 
     // if (this._filters.length > 0 && isNotPassedVerification)

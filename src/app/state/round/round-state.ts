@@ -8,6 +8,8 @@ import { roundStateTransitionRules } from "./round-transition-rules";
 
 export class RoundState extends Round implements State {
 
+
+  name!: string;
   utilizingTile!: Tile
   tilesToDiscard: any;
   player: PlayerState;
@@ -18,7 +20,37 @@ export class RoundState extends Round implements State {
     this.player = player;
   }
 
-  to(nextState: RoundStateName): boolean {
-    return roundStateTransitionRules[this.id][nextState]?.call(null, nextState);
+  to(nextState: RoundState): boolean {
+    return roundStateTransitionRules.checkTransition(this, nextState);
+  }
+
+  setState(TilesManage: RoundStateName): this {
+    return this;
+  }
+
+  apply() {
+    return this;
+  }
+
+  clone(): RoundState {
+    throw new Error("Method not implemented.");
+  }
+
+  discardTiles(_tilesToDiscard: string[]): this  {
+    return this;
+  }
+
+  setPlayer(playerId: string) {
+    throw new Error("Method not implemented.");
+  }
+
+  setTileToUtilize(tileId: string) {
+    new RoundState({
+      id: this.targetState,
+      holdedTiles: currentState.holdedTiles,
+      utilizingTile: currentState.holdedTiles.find(t => t.id === this._tileId),
+      playerId: currentState.playerId,
+      prevRound: currentState              
+    }); 
   }
 }

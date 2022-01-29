@@ -3,7 +3,7 @@ import { RoundState } from "./round-state";
 import { RoundStateName } from "./round-state-name.enum";
 
 
-export const roundStateTransitionRules2: TransitionsScheme2<RoundState> = {
+export const roundStateTransitionRules: TransitionsScheme2<RoundState> = {
   [RoundStateName.Started]: {
     [RoundStateName.ChoosingTileToDiscard]: {
       validators: [],
@@ -68,7 +68,17 @@ function isPlayerChooseTilesToDiscard(round: RoundState): boolean {
 }
 
 
-
+// private _createNewState(currentState: RoundState): RoundState {
+//   const utilizedTile = currentState.utilizingTile;
+//   return new RoundState({
+//     id: this.targetState,
+//     holdedTiles: (currentState?.holdedTiles || [])
+//       .filter(t => t.id !== utilizedTile.id),
+//     utilizingTile: undefined,
+//     playerId: currentState.playerId,
+//     prevRound: currentState              
+//   }); 
+// }
 
 
 
