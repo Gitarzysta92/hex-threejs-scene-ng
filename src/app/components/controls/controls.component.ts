@@ -7,9 +7,9 @@ import { UnassignTile } from 'src/app/commands/state-mutators/unassign-tile.comm
 import { DiscardTiles } from 'src/app/commands/state-transitions/discard-tiles.command';
 import { DrawTiles } from 'src/app/commands/state-transitions/draw-tiles.command';
 import { PickTileForManipulation } from 'src/app/commands/state-transitions/pick-tile-for-manipulation.command';
-import { StartGame } from 'src/app/commands/state-transitions/start-game.command';
-import { StartNewRound } from 'src/app/commands/state-transitions/start-new-round.command';
-import { UtilizeTile } from 'src/app/commands/state-transitions/utilize-tile.command';
+import { StartGame } from 'src/app/commands/state-transitions/game/start-game.command';
+import { StartNewRound } from 'src/app/commands/state-transitions/round/start-new-round.command';
+import { UtilizeTile } from 'src/app/commands/state-transitions/round/utilize-tile.command';
 import { CommandBusService } from 'src/app/lib/command-bus/command-bus.service';
 import { Tile } from 'src/app/logic/models/tile';
 import { GameStateService } from 'src/app/services/game-state/game-state.service';
