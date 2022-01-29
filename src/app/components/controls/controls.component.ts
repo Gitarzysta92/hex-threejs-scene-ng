@@ -1,22 +1,21 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { CommandsFactory } from 'src/app/commands/commands-factory';
-import { RotationDirection } from 'src/app/commands/state-mutators/rotate-tile.command';
-import { UnassignTile } from 'src/app/commands/state-mutators/unassign-tile.command';
-import { DiscardTiles } from 'src/app/commands/state-transitions/discard-tiles.command';
-import { DrawTiles } from 'src/app/commands/state-transitions/draw-tiles.command';
-import { PickTileForManipulation } from 'src/app/commands/state-transitions/pick-tile-for-manipulation.command';
-import { StartGame } from 'src/app/commands/state-transitions/game/start-game.command';
-import { StartNewRound } from 'src/app/commands/state-transitions/round/start-new-round.command';
-import { UtilizeTile } from 'src/app/commands/state-transitions/round/utilize-tile.command';
-import { CommandBusService } from 'src/app/lib/command-bus/command-bus.service';
-import { Tile } from 'src/app/logic/models/tile';
-import { GameStateService } from 'src/app/services/game-state/game-state.service';
-import { PlayersRepositoryService } from 'src/app/services/players-repository/players-repository.service';
-import { RoundStateService } from 'src/app/services/round-state/round-state.service';
-import { GameStateName } from 'src/app/state/game/game-state-name.enum';
-import { RoundStateName } from 'src/app/state/round/round-state-name.enum';
+import { Component } from "@angular/core";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { CommandsFactory } from "src/app/commands/commands-factory";
+import { RotationDirection } from "src/app/commands/state-mutators/rotate-tile.command";
+import { StartGame } from "src/app/commands/state-transitions/game/start-game.command";
+import { DiscardTiles } from "src/app/commands/state-transitions/round/discard-tiles.command";
+import { DrawTiles } from "src/app/commands/state-transitions/round/draw-tiles.command";
+import { PickTileForManipulation } from "src/app/commands/state-transitions/round/pick-tile-for-manipulation.command";
+import { StartNewRound } from "src/app/commands/state-transitions/round/start-new-round.command";
+import { UtilizeTile } from "src/app/commands/state-transitions/round/utilize-tile.command";
+import { CommandBusService } from "src/app/lib/command-bus/command-bus.service";
+import { GameStateService } from "src/app/services/game-state/game-state.service";
+import { PlayersRepositoryService } from "src/app/services/players-repository/players-repository.service";
+import { RoundStateService } from "src/app/services/round-state/round-state.service";
+import { GameStateName } from "src/app/state/game/game-state-name.enum";
+import { RoundStateName } from "src/app/state/round/round-state-name.enum";
+
 
 
 @Component({
