@@ -45,7 +45,7 @@ export const gameStateTransitionRules: TransitionsScheme<GameState> = {
 
 
 function isCurrentRoundEnded(game: GameState): boolean {
-  return game.round.state == RoundStateName.Ended;
+  return game.round.stateName == RoundStateName.Ended;
 }
 
 
