@@ -19,7 +19,7 @@ export class PickTileForManipulation extends BaseCommand implements StateTransit
   } 
 
   setParameters(tileId: string): Command<this> {
-    this.newState.setTileToUtilize(tileId);
+    this.newState.setActivity({ tileId });
     return this;
   }
 

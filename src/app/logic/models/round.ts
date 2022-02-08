@@ -12,4 +12,12 @@ export class Round {
   constructor(data: Partial<Round>) {
     Object.assign(this, data);
   }
+
+  discardTiles(_tilesToDiscard: string[]): this  {
+    return this;
+  }
+
+  setPlayer(playerId: string) {
+    throw new Error("Method not implemented.");
+  }
 };

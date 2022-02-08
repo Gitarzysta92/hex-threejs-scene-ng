@@ -1,56 +1,53 @@
+import { Activity } from "src/app/logic/models/activity";
+import { Board } from "src/app/logic/models/board";
 import { State } from "../../lib/state-machine/state";
 import { Round } from "../../logic/models/round";
 import { Tile } from "../../logic/models/tile";
 import { PlayerState } from "../player/player-state";
-import { RoundStateName } from "./round-state-name.enum";
-import { roundStateTransitionRules } from "./round-transition-rules";
 
 
-export class RoundState extends Round implements State {
+export class RoundState extends State implements Round {
 
-
-  name!: string;
-  utilizingTile!: Tile
-  tilesToDiscard: any;
-  player: PlayerState;
+  public id: number;
+  public playerId: string;
+  public prevRound: Round;
+  public holdedTiles: Tile[];
+  public availableActions: any;
+  public board!: Board;
+  utilizingTile: Tile | undefined;
   tilesLimit: any;
+  player: any;
+  actions: any; 
 
-  constructor(player: PlayerState, data: Partial<RoundState> = {}) {
+  public get currentActivity() { return this._activityStack[0] };
+  private _activityStack: Activity[] = [];
+
+  constructor(
+    player: PlayerState, 
+    data: Partial<RoundState> = {}
+  ) {
     super(data);
-    this.player = player;
-  }
 
-  to(nextState: RoundState): boolean {
-    return roundStateTransitionRules.checkTransition(this, nextState);
   }
-
-  setState(TilesManage: RoundStateName): this {
-    return this;
-  }
-
-  apply() {
-    return this;
-  }
-
-  clone(): RoundState {
+  discardTiles(_tilesToDiscard: string[]): this {
     throw new Error("Method not implemented.");
   }
 
-  discardTiles(_tilesToDiscard: string[]): this  {
-    return this;
-  }
-
-  setPlayer(playerId: string) {
+  setActivity(arg0: PickTileFromTheBoard) {
     throw new Error("Method not implemented.");
   }
 
-  setTileToUtilize(tileId: string) {
-    new RoundState({
-      id: this.targetState,
-      holdedTiles: currentState.holdedTiles,
-      utilizingTile: currentState.holdedTiles.find(t => t.id === this._tileId),
-      playerId: currentState.playerId,
-      prevRound: currentState              
-    }); 
+  markTilesToDiscard(_tilesToDiscard: string[]): this {
+    
+  }
+  setPlayer(playerId: string): void {
+    throw new Error("Method not implemented.");
+  }
+  setTileToUtilize(tileId: string): void {
+    throw new Error("Method not implemented.");
+  }
+  
+  utilizizingTile(utilizizingTile: any): RoundState {
+    throw new Error("Method not implemented.");
   }
 }

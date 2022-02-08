@@ -1,5 +1,5 @@
 import { Action } from "rxjs/internal/scheduler/Action";
-import { TransitionsScheme2 } from "src/app/lib/state-machine/state";  
+import { TransitionsScheme } from "src/app/lib/state-machine/state";
 import { Board } from "src/app/logic/models/board";
 import { Game } from "src/app/logic/models/game";
 import { RoundState } from "../round/round-state";
@@ -7,14 +7,10 @@ import { RoundStateName } from "../round/round-state-name.enum";
 import { GameState } from "./game-state";
 import { GameStateName } from "./game-state-name.enum";
 
-const gameEnded = {
-  validators: [isAnyWinConditionsHasBeenMet],
-  mutators: [setGameWinner]
-}
 
 const isOnlineGame = false;
 
-export const gameStateTransitionRules: TransitionsScheme2<GameState> = {
+export const gameStateTransitionRules: TransitionsScheme<GameState> = {
   [GameStateName.Preparation]: {
     [GameStateName.Round]: {
       validators: [isAllPlayersAreReady],
@@ -30,14 +26,20 @@ export const gameStateTransitionRules: TransitionsScheme2<GameState> = {
       validators: [isBattleTileWasUsed],
       mutators: [calculateBattleResults]
     },
-    [GameStateName.Ended]: gameEnded
+    [GameStateName.Ended]: {
+      validators: [isAnyWinConditionsHasBeenMet],
+      mutators: [setGameWinner]
+    }
   },
   [GameStateName.Battle]: {
     [GameStateName.Round]: {
       validators: [isNoWinner],
       mutators: [pickNextPlayer]
     },
-    [GameStateName.Ended]: gameEnded
+    [GameStateName.Ended]: {
+      validators: [isAnyWinConditionsHasBeenMet],
+      mutators: [setGameWinner]
+    }
   }
 }
 
@@ -47,10 +49,10 @@ function isCurrentRoundEnded(game: GameState): boolean {
 }
 
 
-function startNewRound(game: GameState): GameState {
-  const prevRound = game.round;
-  game.round = new RoundState(game.currentPlayer, prevRound);
-  return game; 
+function startNewRound(state: GameState): GameState {
+  const prevRound = state.round;
+  state.round = new RoundState(state.currentPlayer, prevRound);
+  return state; 
 }
 
 function pickNextPlayer(game: GameState): GameState {
@@ -109,7 +111,8 @@ function setGameWinner(state: Game): Game {
 }
 
 function isBattleTileWasUsed(game: GameState, ): boolean {
-  return game.currentPlayer?.actions?.last() === Action.Battle
+  const a = game.round.currentActivity.name === 'UseInstantAction';
+  return game.round.actions.last().tileId === game.round.currentActivity.tileId;
 }
 
 

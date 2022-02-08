@@ -20,7 +20,7 @@ export class DiscardTiles extends BaseCommand implements StateTransition<RoundSt
   } 
 
   setParameters(tilesToDiscard: string[]): Command<this> { 
-    this.newState.discardTiles(tilesToDiscard);
+    this.newState.markTilesToDiscard(tilesToDiscard);
     return this;
   }
 
