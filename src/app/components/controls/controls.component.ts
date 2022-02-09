@@ -7,14 +7,14 @@ import { StartGame } from "src/app/commands/state-transitions/game/start-game.co
 import { DiscardTiles } from "src/app/commands/state-transitions/round/discard-tiles.command";
 import { DrawTiles } from "src/app/commands/state-transitions/round/draw-tiles.command";
 import { PickTileForManipulation } from "src/app/commands/state-transitions/round/pick-tile-for-manipulation.command";
-import { StartNewRound } from "src/app/commands/state-transitions/round/start-new-round.command";
+import { StartNewRound } from "src/app/commands/state-transitions/game/start-new-round.command";
 import { UtilizeTile } from "src/app/commands/state-transitions/round/utilize-tile.command";
 import { CommandBusService } from "src/app/lib/command-bus/command-bus.service";
 import { GameStateService } from "src/app/services/game-state/game-state.service";
 import { PlayersRepositoryService } from "src/app/services/players-repository/players-repository.service";
 import { RoundStateService } from "src/app/services/round-state/round-state.service";
-import { GameStateName } from "src/app/state/game/game-state-name.enum";
-import { RoundStateName } from "src/app/state/round/round-state-name.enum";
+import { gameStateName, GameStateName } from "src/app/state/game/game-state-name.enum";
+import { roundStateName, RoundStateName } from "src/app/state/round/round-state-name.enum";
 
 
 
@@ -25,10 +25,10 @@ import { RoundStateName } from "src/app/state/round/round-state-name.enum";
 })
 export class ControlsComponent {
 
-  public game = GameStateName;
+  public game = gameStateName;
   public gameState: Observable<GameStateName>;
 
-  public round = RoundStateName;
+  public round = roundStateName;
   public roundState: Observable<RoundStateName>;
   public isTileToUtilize: Observable<boolean>;
 

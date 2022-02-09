@@ -1,14 +1,15 @@
+import { Injectable } from "@angular/core";
 import { BaseCommand, Command } from "src/app/lib/command-bus/base-command";
 import { StateTransition, ValidatableState } from "src/app/lib/state-machine/state";
-import { Player } from "src/app/logic/models/player";
 import { GameState } from "src/app/state/game/game-state";
-import { gameStateName, GameStateName } from "src/app/state/game/game-state-name.enum";
+import { GameStateName, gameStateName } from "src/app/state/game/game-state-name.enum";
 
 
-export class StartGame extends BaseCommand implements StateTransition<GameState, GameStateName> {
+@Injectable()
+export class FinishGame extends BaseCommand implements StateTransition<GameState, GameStateName> {
   
   newState: GameState;
-  targetStateName: GameStateName = gameStateName.Started;
+  targetStateName: GameStateName = gameStateName.Ended;
   
   constructor(
     private readonly _currentState: GameState
@@ -16,11 +17,6 @@ export class StartGame extends BaseCommand implements StateTransition<GameState,
     super();
     this.newState = this._currentState.clone();
   } 
-
-  setParameters(players: Player[]): Command<this> {
-    this.newState.setPlayers(players);
-    return this;
-  }
 
   execute(): void {
     this.newState.apply();

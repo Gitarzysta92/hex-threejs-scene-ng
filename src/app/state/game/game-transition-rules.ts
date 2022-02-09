@@ -1,42 +1,47 @@
-import { Action } from "rxjs/internal/scheduler/Action";
 import { TransitionsScheme } from "src/app/lib/state-machine/state";
+import { Action } from "src/app/logic/models/action";
 import { Board } from "src/app/logic/models/board";
 import { Game } from "src/app/logic/models/game";
+import { Tile } from "src/app/logic/models/tile";
 import { RoundState } from "../round/round-state";
-import { RoundStateName } from "../round/round-state-name.enum";
 import { GameState } from "./game-state";
-import { GameStateName } from "./game-state-name.enum";
+import { GameStateName, gameStateName as state } from "./game-state-name.enum";
 
 
 const isOnlineGame = false;
 
 export const gameStateTransitionRules: TransitionsScheme<GameState> = {
-  [GameStateName.Preparation]: {
-    [GameStateName.Round]: {
+  [state.Preparation]: {
+    [state.Round]: {
       validators: [isAllPlayersAreReady],
       mutators: [pickNextPlayer, startNewRound]
     }
   },
-  [GameStateName.Round]: {
-    [GameStateName.Round]: {
+  [state.Round]: {
+    [state.Round]: {
       validators: [isCurrentRoundEnded],
-      mutators: [pickNextPlayer, startNewRound]
+      mutators: [
+        pickNextPlayer, 
+        startNewRound,
+        spawnActions, 
+        applyPassives
+      ]
     },
-    [GameStateName.Battle]: {
+    [state.Battle]: {
       validators: [isBattleTileWasUsed],
       mutators: [calculateBattleResults]
     },
-    [GameStateName.Ended]: {
+    [state.Ended]: {
       validators: [isAnyWinConditionsHasBeenMet],
       mutators: [setGameWinner]
     }
   },
-  [GameStateName.Battle]: {
-    [GameStateName.Round]: {
+  [state.Battle]: {
+    [state.Round]: {
       validators: [isNoWinner],
       mutators: [pickNextPlayer]
     },
-    [GameStateName.Ended]: {
+    [state.Ended]: {
       validators: [isAnyWinConditionsHasBeenMet],
       mutators: [setGameWinner]
     }
@@ -45,7 +50,7 @@ export const gameStateTransitionRules: TransitionsScheme<GameState> = {
 
 
 function isCurrentRoundEnded(game: GameState): boolean {
-  return game.round.stateName == RoundStateName.Ended;
+  return game.round.stateName == state.Ended;
 }
 
 
@@ -105,6 +110,21 @@ function randomizePlayersOrder(state: Game): Game {
   
   return state;
 }
+
+function spawnActions(game: GameState): GameState {
+  const tiles = game.board.getTiles(game.round.playerId);
+  game.round.availableActions = tiles.reduce((acc: Action[], t: Tile) => 
+    [...acc, t.spawnActions()], [])
+  return game;
+}
+
+function applyPassives(game: GameState): GameState {
+  const tiles = game.board.getTiles(game.round.playerId);
+  game.round.availableActions = tiles.reduce((acc: Action[], t: Tile) => 
+    [...acc, t.spawnActions()], [])
+  return game;
+}
+
 
 function setGameWinner(state: Game): Game {
   return state;

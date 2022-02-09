@@ -1,32 +1,23 @@
-
-import { Action } from "src/app/logic/models/action";
-import { Tile } from "src/app/logic/models/tile";
 import { TransitionsScheme } from "../../lib/state-machine/state";
 import { RoundState } from "./round-state";
-import { RoundStateName } from "./round-state-name.enum";
+import { roundStateName as state} from "./round-state-name.enum";
 
 
 export const roundStateTransitionRules: TransitionsScheme<RoundState> = {
-  [RoundStateName.Preparation]: {
-    [RoundStateName.Started]: {
-      validators: [],
-      mutators: [spawnActions, applyPassives]
-    },
-  },
-  [RoundStateName.Started]: {
-    [RoundStateName.ChoosingTileToDiscard]: {
+  [state.Started]: {
+    [state.ChoosingTileToDiscard]: {
       validators: [],
       mutators: [drawTiles]
     },
   },
-  [RoundStateName.ChoosingTileToDiscard]: {
-    [RoundStateName.TilesManage]: {
+  [state.ChoosingTileToDiscard]: {
+    [state.TilesManage]: {
       validators: [isPlayerChooseTilesToDiscard],
       mutators: [discardTiles]
     },
   },
-  [RoundStateName.TilesManage]: {
-    [RoundStateName.PlacingTileOnTheBoard]: {
+  [state.TilesManage]: {
+    [state.PlacingTileOnTheBoard]: {
       validators: [
         isPlayerHoldLessOrEqualTilesThanMaximum, 
         isPlayerHasAtLeasOneHoldedTile,
@@ -35,7 +26,7 @@ export const roundStateTransitionRules: TransitionsScheme<RoundState> = {
       ],
       mutators: [pickTileFromHoldedTiles]
     },
-    [RoundStateName.UtilizingInstantActionTile]: {
+    [state.UtilizingInstantActionTile]: {
       validators: [
         isPlayerHoldLessOrEqualTilesThanMaximum, 
         isPlayerHasAtLeasOneHoldedTile,
@@ -44,32 +35,32 @@ export const roundStateTransitionRules: TransitionsScheme<RoundState> = {
       ],
       mutators: [pickTileFromHoldedTiles]
     },
-    [RoundStateName.TileManipulation]: {
+    [state.TileManipulation]: {
       validators: [
         isExistsActionThatCanBeApplyedToChoosenTile,
         isPlayerChooseTileFromTilesOnTheBoard
       ],
       mutators: [pickTileFromTheBoard]
     },
-    [RoundStateName.Ended]: {
-      validators: [isPlayerHoldLessOrEqualTilesThanMaximum],
-      mutators: []
+    [state.Ended]: {
+      validators: [],
+      mutators: [discardRandomTilesToEqualMaximum]
     },
   },
-  [RoundStateName.PlacingTileOnTheBoard]: {
-    [RoundStateName.TilesManage]: {
+  [state.PlacingTileOnTheBoard]: {
+    [state.TilesManage]: {
       validators: [isTileCanBePlacedOnTargetField],
       mutators: [putTileOnTheBoard]
     },
   },
-  [RoundStateName.UtilizingInstantActionTile]: {
-    [RoundStateName.TilesManage]: {
+  [state.UtilizingInstantActionTile]: {
+    [state.TilesManage]: {
       validators: [isTileCanBePlacedOnTargetField],
       mutators: [useInstantAction]
-    },
+    }
   },
-  [RoundStateName.TileManipulation]: {
-    [RoundStateName.TilesManage]: {
+  [state.TileManipulation]: {
+    [state.TilesManage]: {
       validators: [isTileCanBePlacedOnTargetField],
       mutators: [putTileOnTheBoard]
     },
@@ -144,20 +135,6 @@ function discardTiles(round: RoundState): RoundState {
   return round;  
 }
 
-function spawnActions(round: RoundState): RoundState {
-  const tiles = round.board.getTiles(round.playerId);
-  round.availableActions = tiles.reduce((acc: Action[], t: Tile) => 
-    [...acc, t.spawnActions()], [])
-  return round;
-}
-
-function applyPassives(round: RoundState): RoundState {
-  const tiles = round.board.getTiles(round.playerId);
-  round.availableActions = tiles.reduce((acc: Action[], t: Tile) => 
-    [...acc, t.spawnActions()], [])
-  return round;
-}
-
 function pickTileFromHoldedTiles(round: RoundState): RoundState {
   const tileId = round.currentActivity.tileId;
   round.utilizingTile = round.holdedTiles.find(t => t.id == tileId);
@@ -177,5 +154,9 @@ function putTileOnTheBoard(round: RoundState): RoundState {
 }
 
 function useInstantAction(round: RoundState): RoundState {
+  return round;
+}
+
+function discardRandomTilesToEqualMaximum(round: RoundState): RoundState { 
   return round;
 }

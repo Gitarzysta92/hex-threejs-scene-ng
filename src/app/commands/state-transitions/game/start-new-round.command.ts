@@ -1,24 +1,24 @@
 import { Injectable } from "@angular/core";
 import { BaseCommand, Command } from "src/app/lib/command-bus/base-command";
 import { StateTransition, ValidatableState } from "src/app/lib/state-machine/state";
-import { RoundState } from "src/app/state/round/round-state";
-import { RoundStateName } from "src/app/state/round/round-state-name.enum";
+import { GameState } from "src/app/state/game/game-state";
+import { GameStateName, gameStateName } from "src/app/state/game/game-state-name.enum";
+
 
 @Injectable()
-export class StartNewRound extends BaseCommand implements StateTransition<RoundState> {
+export class StartNewRound extends BaseCommand implements StateTransition<GameState, GameStateName> {
   
-  newState: RoundState;
-  targetStateName: RoundStateName = RoundStateName.ChoosingTileToDiscard;
+  newState: GameState;
+  targetStateName: GameStateName = gameStateName.Round;
   
   constructor(
-    private readonly _currentState: RoundState
+    private readonly _currentState: GameState
   ) {
     super();
     this.newState = this._currentState.clone();
   } 
 
   setParameters(playerId: string): Command<this> {
-    this.newState.setPlayer(playerId);
     return this;
   }
 
@@ -26,7 +26,7 @@ export class StartNewRound extends BaseCommand implements StateTransition<RoundS
     this.newState.apply();
   }
 
-  checkIfTransitionPossible(state: ValidatableState<RoundState>): boolean {
+  checkIfTransitionPossible(state: ValidatableState<GameState>): boolean {
     this.newState.setState(this.targetStateName);
     return state.to(this.newState);
   }

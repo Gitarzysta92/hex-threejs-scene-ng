@@ -2,15 +2,15 @@ import { RoundStateName } from "src/app/state/round/round-state-name.enum";
 
 export type ValidatableState<T extends State> = Pick<T, keyof State>;
 
-export interface StateTransition<T extends State> {
+export interface StateTransition<T extends State, N> {
   checkIfTransitionPossible: (prevState: ValidatableState<T>) => boolean
   newState: T;
-  targetStateName: number;
+  targetStateName: N;
 }
 
 export type TransitionsScheme<T extends State> = { 
-  [key: number]: { 
-    [key: number]: {
+  [key: string]: { 
+    [key: string]: {
       validators: Array<(state: T) => boolean>,
       mutators: Array<(state: T) => void>
     } 
@@ -18,8 +18,8 @@ export type TransitionsScheme<T extends State> = {
 }
 
 export abstract class State {
-  stateName!: string;
-  name!: number;
+
+  name!: string;
 
   constructor(
     private readonly _transitionRules: TransitionsScheme<State>
