@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { merge } from 'rxjs';
 import { CommandsFactory } from './commands/commands-factory';
+import { StartGame } from './commands/state-transitions/game/start-game.command';
 import { FinishRound } from './commands/state-transitions/round/finish-round.command';
 import { BaseCommand } from './lib/command-bus/base-command';
 import { CommandBusService, DefaultHandler } from './lib/command-bus/command-bus.service';
@@ -44,6 +45,20 @@ export class AppComponent implements OnInit {
     )
     .subscribe(() => this._commandBusService.dispatch(this._command.create(FinishRound)));
 
+    // data loading
+    const me = this._gameLoopAutoDispatcher()
+      
+
+    const players = this._playersService.getPlayers();
+    this._playersStateService.init(players);
+    
+    const game = this._gameService.getGameSettings();
+    this._gameStateService.init(game, players);
+
+    
+
+    
+    this._commandBusService.dispatch(this._command.create(StartGame));
   }
 }
 
